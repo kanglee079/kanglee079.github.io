@@ -555,26 +555,6 @@ function Archive() {
   )
 }
 
-function LifeStrip() {
-  const { lang, touch } = useT()
-  const cap = extra[lang].life
-  const pics = [['assets/life-1.jpg', 'aspect-[4/5]', '-rotate-2'], ['assets/life-2.jpg', 'aspect-[4/5]', 'rotate-1 md:translate-y-8'], ['assets/life-3.jpg', 'aspect-[3/2]', '-rotate-1']]
-  return (
-    <div className="mt-[clamp(50px,7vw,100px)]">
-      <p className="mono text-[var(--grey)]">{extra[lang].lifeLabel}</p>
-      <div className="no-scrollbar -mx-5 mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0">
-        {pics.map(([src, ratio, rot], i) => (
-          <motion.figure key={src} className={`m-0 w-[72vw] shrink-0 snap-center md:w-auto ${touch ? '' : rot}`}
-            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '0px 0px -10% 0px' }} transition={{ duration: 1, ease: EXPO, delay: i * 0.1 }}>
-            <div className={`overflow-hidden ${ratio} bg-[#DAD8CF]`}><img src={src} alt={cap[i]} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(.16,1,.3,1)] hover:scale-[1.04]" /></div>
-            <figcaption className="mono mt-3 text-[var(--grey)]">{cap[i]}</figcaption>
-          </motion.figure>
-        ))}
-      </div>
-    </div>
-  )
-}
-
 function About() {
   const { t } = useT()
   return (
@@ -596,7 +576,6 @@ function About() {
             ))}
           </ol>
         </div>
-        <LifeStrip />
       </div>
     </section>
   )

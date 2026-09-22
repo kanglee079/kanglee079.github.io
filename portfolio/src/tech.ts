@@ -238,8 +238,8 @@ export const how: Record<Lang, How> = {
   },
 }
 
-export const extra: Record<Lang, { caption: string; techLabel: string; lifeLabel: string; life: string[] }> = {
-  vi: { caption: 'Đà Nẵng, 2026', techLabel: 'Kỹ thuật', lifeLabel: 'Ngoài giờ', life: ['Biển Đà Nẵng, một buổi chiều mưa', 'Dạo phố ở Thượng Hải', 'Ngồi nghe ở một buổi hội thảo'] },
-  en: { caption: 'Da Nang, 2026', techLabel: 'Under the hood', lifeLabel: 'Off hours', life: ['Da Nang beach on a rainy afternoon', 'Wandering around Shanghai', 'Listening in at a conference'] },
-  zh: { caption: '岘港，2026', techLabel: '技术细节', lifeLabel: '工作之外', life: ['雨天下午的岘港海边', '在上海逛街', '在一场会议上听讲'] },
+export const extra: Record<Lang, { caption: string; techLabel: string }> = {
+  vi: { caption: 'Đà Nẵng, 2026', techLabel: 'Kỹ thuật' },
+  en: { caption: 'Da Nang, 2026', techLabel: 'Under the hood' },
+  zh: { caption: '岘港，2026', techLabel: '技术细节' },
 }
