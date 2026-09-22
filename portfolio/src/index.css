@@ -50,3 +50,10 @@ html[lang^="zh"] body { font-family: "Hanken Grotesk", "PingFang SC", "Hiragino 
 html[lang^="zh"] .serif { font-family: "Songti SC", "Noto Serif SC", "STSong", serif; font-style: normal; letter-spacing: 0; }
 html[lang^="zh"] .display { letter-spacing: -0.01em; line-height: 1.16; }
 html[lang^="zh"] .mono { letter-spacing: .08em; }
+
+/* ===== hiệu năng & cảm ứng ===== */
+.cv-auto { content-visibility: auto; contain-intrinsic-size: auto 900px; }
+a, button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+@keyframes marquee-name { to { transform: translate3d(-25%, 0, 0); } }
+.marquee-css { animation: marquee-name 14s linear infinite; will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .marquee-css { animation: none; } }
