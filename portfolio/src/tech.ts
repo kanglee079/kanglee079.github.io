@@ -6,6 +6,15 @@ export interface How { label: string; title: string; intro: string; notes: strin
 
 export const tech: Record<Lang, Record<string, string[]>> = {
   vi: {
+    ganba: [
+      'SwiftUI, khoảng 36.500 dòng Swift cho app và 15.800 dòng trong một Swift package dùng chung với app thứ hai',
+      'Tiến độ lưu offline trong SQLite qua GRDB; Sign in with Apple chỉ để đồng bộ, không bắt buộc',
+      'Ôn thẻ từ vựng và kanji bằng FSRS; StoreKit 2 cho gói Pro; widget đếm ngược ngày thi',
+      'Chế độ thi giữ màn hình sáng và tính giờ từng phần như thi thật; làm dở thoát ra vẫn giữ bài',
+      'Câu hỏi AI soạn phải qua kiểm tra chéo hai mô hình; pipeline có cổng chặn tài nguyên chưa rõ quyền sử dụng',
+      'Backend Go với pgx và goose; gói nội dung xuất lên Cloudflare R2; khoảng 15.000 dòng test Swift',
+      'Bản Android viết bằng Jetpack Compose, khoảng 18.000 dòng Kotlin',
+    ],
     tieu: [
       'Flutter với Provider, khoảng 20.000 dòng Dart chia 10 module',
       'Từ điển nằm trong SQLCipher AES-256; âm thanh mã hoá AES-GCM trong container KXA1 tự định nghĩa, tên file ràng buộc làm AAD',
@@ -37,6 +46,8 @@ export const tech: Record<Lang, Record<string, string[]>> = {
       'Trạng thái dùng chung qua App Group và JSON, không CoreData, vì extension chỉ có khoảng 6 MB bộ nhớ',
       'Backend Go chỉ dùng net/http và SQLite thuần Go, một image khoảng 15 MB trên Fly.io',
       'Tự xác thực App Store Server Notifications v2 bằng thư viện chuẩn; đồng hồ nhảy quá 5 phút thì phiên bị coi là bỏ dở',
+      'Target "chỉ hẹn giờ" cùng bundle id, không cần quyền Family Controls — phương án dự phòng giúp bản 1.0 lên đúng hạn',
+      'Focus Duo ghép cặp bằng mã mời 8 ký tự; API ghép cặp giới hạn 20 lần thử mỗi phút trên mỗi IP',
     ],
     nuni: [
       'Go 1.26 với chi và pgx trên PostgreSQL, khoảng 30.000 dòng, hơn 20 migration goose',
@@ -55,6 +66,15 @@ export const tech: Record<Lang, Record<string, string[]>> = {
     ],
   },
   en: {
+    ganba: [
+      'SwiftUI, about 36,500 lines of Swift in the app plus 15,800 in a Swift package shared with a second app',
+      'Progress stored offline in SQLite via GRDB; Sign in with Apple only for optional sync',
+      'Vocabulary and kanji reviews on FSRS; StoreKit 2 for Pro; an exam-countdown widget',
+      'Exam mode keeps the screen awake and times each section like the real test; leaving mid-test keeps your answers',
+      'AI-drafted questions must pass a cross-check by two models; the pipeline gates any asset with unclear usage rights',
+      'Go backend on pgx and goose; content packs exported to Cloudflare R2; about 15,000 lines of Swift tests',
+      'An Android version in Jetpack Compose, about 18,000 lines of Kotlin',
+    ],
     tieu: [
       'Flutter with Provider, about 20,000 lines of Dart across 10 modules',
       'Dictionary in SQLCipher AES-256; audio encrypted with AES-GCM in a custom KXA1 container, filename bound as AAD',
@@ -86,6 +106,8 @@ export const tech: Record<Lang, Record<string, string[]>> = {
       'Shared state via App Group and JSON, no CoreData, because extensions get roughly 6 MB of memory',
       'A Go backend on net/http and pure-Go SQLite, one ~15 MB image on Fly.io',
       'App Store Server Notifications v2 verified with the standard library; a clock jump over 5 minutes marks a session abandoned',
+      'A timer-only target on the same bundle id, without the Family Controls entitlement — the fallback that let 1.0 ship on time',
+      'Focus Duo pairs with an 8-character invite code; the join endpoint is rate-limited to 20 tries per minute per IP',
     ],
     nuni: [
       'Go 1.26 with chi and pgx on PostgreSQL, about 30,000 lines, 20+ goose migrations',
@@ -104,6 +126,15 @@ export const tech: Record<Lang, Record<string, string[]>> = {
     ],
   },
   zh: {
+    ganba: [
+      'SwiftUI，应用约 36,500 行 Swift，另有约 15,800 行在与第二款应用共用的 Swift package 中',
+      '进度离线存于 SQLite（GRDB）；Apple 登录仅用于可选同步',
+      '词汇和汉字复习用 FSRS；Pro 订阅用 StoreKit 2；有考试倒计时小组件',
+      '考试模式保持屏幕常亮，像真实考试一样分部分计时；中途退出不丢作答',
+      'AI 起草的题目必须经过两个模型交叉检查；流水线会拦下使用权不明的素材',
+      'Go 后端使用 pgx 和 goose；内容包导出到 Cloudflare R2；约 15,000 行 Swift 测试',
+      'Android 版用 Jetpack Compose 编写，约 18,000 行 Kotlin',
+    ],
     tieu: [
       'Flutter 与 Provider，约 20,000 行 Dart，分 10 个模块',
       '词典存于 SQLCipher AES-256；音频用 AES-GCM 加密，封装在自定义的 KXA1 容器中，文件名作为 AAD 绑定',
@@ -135,6 +166,8 @@ export const tech: Record<Lang, Record<string, string[]>> = {
       '共享状态走 App Group 加 JSON，不用 CoreData，因为扩展只有约 6 MB 内存',
       'Go 后端只用 net/http 和纯 Go 的 SQLite，一个约 15 MB 的镜像跑在 Fly.io',
       '用标准库自行校验 App Store Server Notifications v2；时钟跳动超过 5 分钟即判定专注会话中断',
+      '同 bundle id 的「仅计时」target，不需要 Family Controls 权限——让 1.0 按时上架的备用方案',
+      'Focus Duo 用 8 位邀请码配对；加入接口按 IP 限制每分钟 20 次尝试',
     ],
     nuni: [
       'Go 1.26，chi 与 pgx 配合 PostgreSQL，约 30,000 行，20 多个 goose 迁移',
@@ -160,6 +193,8 @@ export const how: Record<Lang, How> = {
     title: 'Vài quyết định kỹ thuật tôi *thấy đáng kể*.',
     intro: 'Mỗi dòng dưới đây là một thứ có thật trong mã nguồn, không phải khẩu hiệu.',
     notes: [
+      'Câu hỏi AI soạn chỉ được xuất bản sau khi hai mô hình khác nhau cùng kiểm tra.',
+      'Học, mua và mở khoá không bao giờ phải chờ server; mất mạng vẫn làm đề được.',
       'Từ điển trong SQLCipher AES-256; âm thanh AES-GCM, tên file ràng buộc làm AAD.',
       'Khoá gốc tách hai mảnh XOR; HKDF sinh khoá riêng cho dữ liệu và âm thanh.',
       'Build phát hành tự thất bại nếu còn SQLite hay MP3 chưa mã hoá trong IPA.',
@@ -175,9 +210,9 @@ export const how: Record<Lang, How> = {
     ],
     toolsLabel: 'Bộ công cụ',
     tools: [
-      ['Mobile', 'Flutter (GetX, Provider, BLoC), SwiftUI, WidgetKit, Screen Time API'],
+      ['Mobile', 'SwiftUI, Flutter (GetX, Provider, BLoC), Jetpack Compose, WidgetKit, Screen Time API'],
       ['Backend', 'Go (net/http, chi, pgx), Node/Express, Cloudflare Workers'],
-      ['Dữ liệu', 'PostgreSQL, SQLite/SQLCipher, Firestore, Supabase, MongoDB, D1/KV'],
+      ['Dữ liệu', 'PostgreSQL, SQLite (GRDB, SQLCipher), Firestore, Supabase, MongoDB, D1/KV, R2'],
       ['Thanh toán', 'StoreKit 2, App Store Server Notifications v2, Google Play Billing'],
       ['Phát hành', 'XcodeGen, Fastlane, script kiểm tra tự viết, Fly.io, Render, Docker'],
     ],
@@ -187,6 +222,8 @@ export const how: Record<Lang, How> = {
     title: 'A few engineering decisions *I stand behind*.',
     intro: 'Every line below is something real in the source, not a slogan.',
     notes: [
+      'AI-drafted questions are published only after two different models have checked them.',
+      'Studying, buying and unlocking never wait on a server; tests work offline.',
       'Dictionary in SQLCipher AES-256; audio in AES-GCM with the filename bound as AAD.',
       'Master key split into two XOR shares; HKDF derives separate data and audio keys.',
       'The release build fails if unencrypted SQLite or MP3 survives in the IPA.',
@@ -202,9 +239,9 @@ export const how: Record<Lang, How> = {
     ],
     toolsLabel: 'Toolbox',
     tools: [
-      ['Mobile', 'Flutter (GetX, Provider, BLoC), SwiftUI, WidgetKit, Screen Time API'],
+      ['Mobile', 'SwiftUI, Flutter (GetX, Provider, BLoC), Jetpack Compose, WidgetKit, Screen Time API'],
       ['Backend', 'Go (net/http, chi, pgx), Node/Express, Cloudflare Workers'],
-      ['Data', 'PostgreSQL, SQLite/SQLCipher, Firestore, Supabase, MongoDB, D1/KV'],
+      ['Data', 'PostgreSQL, SQLite (GRDB, SQLCipher), Firestore, Supabase, MongoDB, D1/KV, R2'],
       ['Payments', 'StoreKit 2, App Store Server Notifications v2, Google Play Billing'],
       ['Release', 'XcodeGen, Fastlane, hand-written audit scripts, Fly.io, Render, Docker'],
     ],
@@ -214,6 +251,8 @@ export const how: Record<Lang, How> = {
     title: '几个我*站得住脚*的技术决定。',
     intro: '下面每一条都真实存在于代码里，不是口号。',
     notes: [
+      'AI 起草的题目，必须经过两个不同模型检查后才会发布。',
+      '学习、购买和解锁从不等待服务器；断网也能做题。',
       '词典存于 SQLCipher AES-256；音频用 AES-GCM，文件名作为 AAD 绑定。',
       '主密钥拆成两份 XOR 分片；HKDF 分别派生数据密钥和音频密钥。',
       'IPA 里若残留未加密的 SQLite 或 MP3，发布构建直接失败。',
@@ -229,9 +268,9 @@ export const how: Record<Lang, How> = {
     ],
     toolsLabel: '工具箱',
     tools: [
-      ['移动端', 'Flutter（GetX、Provider、BLoC）、SwiftUI、WidgetKit、Screen Time API'],
+      ['移动端', 'SwiftUI、Flutter（GetX、Provider、BLoC）、Jetpack Compose、WidgetKit、Screen Time API'],
       ['后端', 'Go（net/http、chi、pgx）、Node/Express、Cloudflare Workers'],
-      ['数据', 'PostgreSQL、SQLite/SQLCipher、Firestore、Supabase、MongoDB、D1/KV'],
+      ['数据', 'PostgreSQL、SQLite（GRDB、SQLCipher）、Firestore、Supabase、MongoDB、D1/KV、R2'],
       ['支付', 'StoreKit 2、App Store Server Notifications v2、Google Play Billing'],
       ['发布', 'XcodeGen、Fastlane、自写审计脚本、Fly.io、Render、Docker'],
     ],

@@ -13,14 +13,16 @@ export const GITHUB = 'https://github.com/kanglee079'
 /* ---------- phần không phụ thuộc ngôn ngữ ---------- */
 export interface Meta { id: string; year: string; panel: string; ink: string; icon?: string; shots?: string[]; href?: string }
 export const meta: Meta[] = [
+  { id: 'ganba', year: '2026', panel: '#1A2350', ink: '#F4F1EA', icon: 'assets/icon-ganba.jpg', href: 'https://apps.apple.com/vn/app/id6815570410',
+    shots: ['assets/shot-ganba-1.jpg', 'assets/shot-ganba-2.jpg', 'assets/shot-ganba-3.jpg', 'assets/shot-ganba-4.jpg'] },
   { id: 'tieu', year: '2026', panel: '#0F6E6A', ink: '#F2F7F4', icon: 'assets/icon-hoctiengtieu.png', href: 'https://apps.apple.com/vn/app/id6803075590',
     shots: ['assets/shot-hoctiengtieu-1.jpg', 'assets/shot-hoctiengtieu-2.jpg', 'assets/shot-hoctiengtieu-3.jpg', 'assets/shot-hoctiengtieu-4.jpg'] },
+  { id: 'pea', year: '2026', panel: '#DDEFD6', ink: '#14301A', icon: 'assets/icon-peapod.jpg', href: 'https://apps.apple.com/vn/app/id6814148941',
+    shots: ['assets/shot-peapod-1.jpg', 'assets/shot-peapod-2.jpg', 'assets/shot-peapod-3.jpg', 'assets/shot-peapod-4.jpg'] },
   { id: 'meal', year: '2025', panel: '#E9E2D0', ink: '#1C2B22', icon: 'assets/icon-smartmeal.png', href: 'https://apps.apple.com/vn/app/id6741747881',
     shots: ['assets/shot-smartmeal-4.jpg', 'assets/shot-smartmeal-1.jpg', 'assets/shot-smartmeal-3.jpg', 'assets/shot-smartmeal-2.jpg'] },
   { id: 'drop', year: '2026', panel: '#EAE1D8', ink: '#2B1712', icon: 'assets/icon-donedrop.png', href: 'https://play.google.com/store/apps/details?id=com.donedrop.app',
     shots: ['assets/shot-donedrop-1.jpg', 'assets/shot-donedrop-2.jpg', 'assets/shot-donedrop-3.jpg'] },
-  { id: 'pea', year: '2026', panel: '#DDEFD6', ink: '#14301A', icon: 'assets/icon-peapod.jpg',
-    shots: ['assets/shot-peapod-1.jpg', 'assets/shot-peapod-2.jpg', 'assets/shot-peapod-3.jpg'] },
   { id: 'nuni', year: '2026', panel: '#1B2A44', ink: '#EEF2FA' },
   { id: 'crab', year: '2024', panel: '#7A2E1F', ink: '#FBEFEA' },
 ]
@@ -48,7 +50,7 @@ export const content: Record<Lang, Content> = {
     nav: { work: 'Dự án', about: 'Về tôi', contact: 'Liên hệ', menu: 'Menu' },
     hero: {
       lines: ['Tôi làm app,', 'từ *ý tưởng* cho tới', 'lúc nó lên store.'],
-      sub: 'Lập trình viên Flutter và iOS. Hai app trên App Store, một app trên Google Play, vài app nữa đang trên đường tới.',
+      sub: 'Lập trình viên Flutter và iOS. Bốn app trên App Store, một app trên Google Play, vài app nữa đang trên đường tới.',
       place: 'Đang làm việc tại Đà Nẵng',
       sr: 'Vương Hỷ Khang — lập trình viên ứng dụng độc lập',
     },
@@ -69,7 +71,7 @@ export const content: Record<Lang, Content> = {
       label: 'Về tôi',
       lines: ['Chậm mà chắc,', 'như *cây lớn*', 'từng vòng gỗ.'],
       paras: [
-        'Tôi chủ yếu viết Flutter, gần đây thêm Swift khi cần đụng sâu vào iOS. Phía sau thường là Go hoặc Node, dữ liệu nằm ở Postgres, SQLite hay Firebase tuỳ bài toán. Web thì Next.js.',
+        'Tôi viết Flutter lâu nhất. Năm nay tôi chuyển hẳn sang Swift và SwiftUI cho các app iOS, và Jetpack Compose khi cần một bản Android riêng. Phía sau thường là Go hoặc Node, dữ liệu nằm ở Postgres, SQLite hay Firebase tuỳ bài toán. Web thì Next.js.',
         'Thứ tôi giỏi nhất có lẽ là đưa một sản phẩm đi hết đường: qua được khâu kiểm duyệt của Apple và Google, xử lý thanh toán trong app, chứng chỉ, chính sách, ảnh chụp màn hình — những việc không ai thích làm nhưng thiếu thì app không bao giờ ra đời.',
       ],
       journey: [
@@ -77,12 +79,23 @@ export const content: Record<Lang, Content> = {
         ['2023', 'Gặp Flutter và ở lại. Làm liên tục các app nhỏ để học — phần lớn vẫn nằm trên GitHub.'],
         ['2024', 'Sổ thu mua cua đi vào vận hành. Lần đầu tiên phần mềm của tôi có người dùng hằng ngày.'],
         ['2025', 'SmartMeal AI được Apple duyệt. App đầu tiên mang tên tôi trên App Store.'],
-        ['2026', 'Phát hành Học Tiếng Tiều và DoneDrop. Bắt đầu viết Swift native với Peapod.'],
+        ['2026', 'Phát hành Học Tiếng Tiều, DoneDrop, Peapod và Ganba. Hai app sau cùng viết hoàn toàn bằng Swift.'],
         ['2028', 'Dự định mở một studio nhỏ làm app và game ở TP.HCM.'],
       ],
     },
     footer: { lines: ['Mình cùng', 'làm *gì đó* nhé'], write: 'Viết cho tôi', copied: 'Đã chép địa chỉ email', version: 'Phiên bản', time: 'Giờ ở Việt Nam', storeName: 'Tên trên App Store' },
     projects: {
+      ganba: {
+        name: 'Ganba', kind: 'App Store', linkLabel: 'Xem trên App Store',
+        lead: 'App luyện thi JLPT từ N5 đến N1: làm đề thi thử, biết mình còn thiếu bao nhiêu điểm để đậu, rồi luyện đúng phần đang kéo điểm xuống.',
+        body: [
+          'Ganba mở đầu bằng một bài kiểm tra 8 câu trong khoảng ba phút, ước tính điểm rồi lên lịch học tới ngày thi. Hơn 200 đề luyện theo đúng định dạng JLPT, tính giờ từng phần như thi thật, phần nghe có âm thanh, làm dở thoát ra vẫn giữ nguyên bài.',
+          'Mọi tiến độ nằm trong SQLite trên máy, không cần tài khoản; đăng nhập bằng Apple chỉ để đồng bộ nếu muốn. Server không nằm trên đường học: mất mạng vẫn làm đề, vẫn mua gói Pro, vẫn mở khoá.',
+          'Phần khó nhất là nội dung. Câu hỏi do AI soạn phải qua kiểm tra chéo của hai mô hình khác nhau mới được xuất bản, lời giải do AI viết được gắn nhãn ngay trong app, và pipeline tự chặn mọi tài nguyên chưa rõ quyền sử dụng.',
+          'Ganba nằm chung một repo với Hiyoko, app cho người mới bắt đầu, hai app dùng chung một Swift package. Bản Android của Ganba đang được viết bằng Jetpack Compose.',
+        ],
+        facts: [['Vai trò', 'Một mình — iOS, Android, backend, pipeline nội dung'], ['Nền tảng', 'iOS 17+ · Android đang phát triển'], ['Công nghệ', 'SwiftUI, GRDB, FSRS, StoreKit 2, Go, Jetpack Compose'], ['Phiên bản', '1.0.2 · phát hành tháng 10/2026']],
+      },
       tieu: {
         name: 'Học Tiếng Tiều', kind: 'App Store', linkLabel: 'Xem trên App Store',
         lead: 'App học tiếng Triều Châu cho người Việt. Tôi làm nó vì gần như không tìm được tài liệu học tiếng Tiều nào viết bằng tiếng Việt.',
@@ -124,13 +137,20 @@ export const content: Record<Lang, Content> = {
         facts: [['Vai trò', 'Một mình — sản phẩm, app, media backend'], ['Nền tảng', 'Android · iOS đang chuẩn bị'], ['Công nghệ', 'Flutter, Firebase, Fastlane, Python'], ['Trạng thái', 'Đã phát hành trên Google Play']],
       },
       pea: {
-        name: 'Peapod', kind: 'Sắp phát hành',
-        lead: 'Đặt giờ tập trung, điện thoại khoá các app gây xao nhãng, và một hạt đậu nhỏ lớn dần theo số phút bạn giữ được.',
+        name: 'Peapod', kind: 'App Store', linkLabel: 'Xem trên App Store',
+        lead: 'Hẹn giờ tập trung kèm một hạt đậu nhỏ lớn dần theo từng phút bạn giữ được. Miễn phí, không cần đăng nhập.',
         body: [
-          'Khác với các app trước, Peapod viết hoàn toàn bằng SwiftUI thay vì Flutter. Lý do đơn giản: Screen Time API chỉ dùng được từ native, và phải chia thành bốn app extension chạy riêng mới chặn được app khác.',
-          'Backend là một service Go rất nhỏ. Phần tốn thời gian nhất lại là vòng lặp nuôi đậu — làm sao để người ta muốn quay lại mà không thấy bị ép. App đang chờ Apple duyệt quyền Family Controls.',
+          'Peapod là app đầu tiên tôi viết hoàn toàn bằng SwiftUI thay vì Flutter, vì tôi muốn chặn app gây xao nhãng bằng Screen Time API — thứ chỉ làm được từ native và phải chia thành nhiều app extension chạy riêng.',
+          'Quyền Family Controls phải chờ Apple duyệt riêng, và lúc nộp bản 1.0 thì chưa có. Tôi đã dựng sẵn một target "chỉ hẹn giờ" cùng bundle id, không cần quyền đó, để app vẫn lên đúng hạn. Một ngày sau Apple cấp quyền; bản 1.1 có chặn app thật và giao diện tiếng Việt đã sẵn sàng.',
+          'Focus Duo cho hai người ghép cặp bằng một mã mời, không cần tài khoản: thấy hạt đậu của nhau, cổ vũ nhau và giữ chung một chuỗi ngày. Backend Go chỉ biết một mã thiết bị ẩn danh.',
         ],
-        facts: [['Vai trò', 'Một mình — iOS native, backend, game design'], ['Nền tảng', 'iOS'], ['Công nghệ', 'SwiftUI, FamilyControls, DeviceActivity, Go'], ['Trạng thái', 'Chờ Apple duyệt entitlement']],
+        facts: [['Vai trò', 'Một mình — iOS native, backend, game design'], ['Nền tảng', 'iOS 17+'], ['Công nghệ', 'SwiftUI, FamilyControls, WidgetKit, Go'], ['Phiên bản', '1.0 trên App Store · 1.1 có chặn app đang chuẩn bị']],
+        features: [
+          { title: 'Một hạt đậu lớn theo từng phút', text: 'Mỗi phiên tập trung làm hạt đậu lớn thêm, từ hạt giống tới Golden Pod. Bỏ cuộc giữa chừng thì đậu buồn một tiếng, vậy thôi.' },
+          { title: 'Vườn và bộ sưu tập', text: 'Đậu lớn hết cỡ thì đem trồng và ấp một hạt bí ẩn — tám loại đậu từ thường tới huyền thoại để sưu tầm.' },
+          { title: 'Thống kê không khoá sau paywall', text: 'Số phút mỗi ngày, tỷ lệ hoàn thành, giờ tập trung tốt nhất, thời gian đã dành cho việc gì — tất cả miễn phí và nằm trên máy.' },
+          { title: 'Chọn việc, chọn độ nghiêm', text: 'Ghi một việc cần làm, chọn từ 15 đến 120 phút. Ở chế độ Khó, rời app quá 30 giây là mất phiên.' },
+        ],
       },
       nuni: {
         name: 'Nuni HSK', kind: 'Web & mobile',
@@ -158,7 +178,7 @@ export const content: Record<Lang, Content> = {
     nav: { work: 'Work', about: 'About', contact: 'Contact', menu: 'Menu' },
     hero: {
       lines: ['I build apps,', 'from a rough *idea*', 'to the store shelf.'],
-      sub: 'Flutter and iOS developer. Two apps on the App Store, one on Google Play, and a few more on the way.',
+      sub: 'Flutter and iOS developer. Four apps on the App Store, one on Google Play, and a few more on the way.',
       place: 'Currently working in Da Nang',
       sr: 'Vuong Hy Khang — independent app developer',
     },
@@ -179,7 +199,7 @@ export const content: Record<Lang, Content> = {
       label: 'About',
       lines: ['Slow and steady,', 'like a *tree* adding', 'one ring a year.'],
       paras: [
-        'Most of what I write is Flutter, with Swift when I need to go deep into iOS. Behind it there is usually Go or Node, with Postgres, SQLite or Firebase depending on the job. On the web I use Next.js.',
+        'Flutter is what I have written longest. This year I moved my iOS apps to Swift and SwiftUI, and use Jetpack Compose when an app needs its own Android build. Behind them there is usually Go or Node, with Postgres, SQLite or Firebase depending on the job. On the web I use Next.js.',
         'What I am probably best at is getting a product all the way out the door: app review at Apple and Google, in-app payments, certificates, policies, screenshots — the work nobody enjoys, and without which no app ever ships.',
       ],
       journey: [
@@ -187,12 +207,23 @@ export const content: Record<Lang, Content> = {
         ['2023', 'Found Flutter and stayed. Built small apps non-stop to learn — most are still on GitHub.'],
         ['2024', 'The crab ledger went into daily use. My first software with people relying on it.'],
         ['2025', 'SmartMeal AI approved by Apple. My first app on the App Store under my own name.'],
-        ['2026', 'Shipped Learn Teochew and DoneDrop. Started writing native Swift for Peapod.'],
+        ['2026', 'Shipped Learn Teochew, DoneDrop, Peapod and Ganba. The last two are written entirely in Swift.'],
         ['2028', 'The plan: a small app and game studio in Ho Chi Minh City.'],
       ],
     },
     footer: { lines: ["Let's make", '*something* together'], write: 'Write to me', copied: 'Email address copied', version: 'Version', time: 'Local time', storeName: 'App Store name' },
     projects: {
+      ganba: {
+        name: 'Ganba', kind: 'App Store', linkLabel: 'View on the App Store',
+        lead: 'JLPT prep from N5 to N1: take a mock test, see how many points you still need to pass, then practise the parts pulling your score down.',
+        body: [
+          'Ganba opens with an eight-question check that takes about three minutes, estimates your score and plans your study up to exam day. Over 200 practice tests follow the JLPT format, timed section by section like the real exam, with audio for listening, and you can leave mid-test without losing answers.',
+          'All progress lives in SQLite on the device, with no account; Sign in with Apple is only there if you want sync. The server is never on the learning path: offline you can still take tests, buy Pro and unlock content.',
+          'The hard part is the content. AI-drafted questions must pass a cross-check by two different models before they are published, AI-written explanations are labelled in the app, and the pipeline blocks any asset whose usage rights are unclear.',
+          'Ganba shares a repository and a Swift package with Hiyoko, an app for complete beginners. An Android version of Ganba is being written in Jetpack Compose.',
+        ],
+        facts: [['Role', 'Solo — iOS, Android, backend, content pipeline'], ['Platform', 'iOS 17+ · Android in development'], ['Stack', 'SwiftUI, GRDB, FSRS, StoreKit 2, Go, Jetpack Compose'], ['Version', '1.0.2 · released October 2026']],
+      },
       tieu: {
         name: 'Learn Teochew', kind: 'App Store', linkLabel: 'View on the App Store',
         lead: 'A Teochew language course for Vietnamese speakers. I built it because there was almost nothing written in Vietnamese for learning Teochew.',
@@ -234,13 +265,20 @@ export const content: Record<Lang, Content> = {
         facts: [['Role', 'Solo — product, app, media backend'], ['Platform', 'Android · iOS in preparation'], ['Stack', 'Flutter, Firebase, Fastlane, Python'], ['Status', 'Live on Google Play']],
       },
       pea: {
-        name: 'Peapod', kind: 'Coming soon',
-        lead: 'Set a focus timer, the phone locks the apps that distract you, and a little bean grows with every minute you hold on.',
+        name: 'Peapod', kind: 'App Store', linkLabel: 'View on the App Store',
+        lead: 'A focus timer with a tiny pea that grows every minute you stay focused. Free, with no login.',
         body: [
-          'Unlike my earlier apps, Peapod is written entirely in SwiftUI rather than Flutter. The reason is simple: the Screen Time API is native-only, and blocking other apps takes four separate app extensions.',
-          'The backend is a very small Go service. What took the longest was the bean itself — making people want to come back without feeling pushed. The app is waiting for Apple to grant the Family Controls entitlement.',
+          'Peapod is the first app I wrote entirely in SwiftUI rather than Flutter, because I wanted to block distracting apps with the Screen Time API — which only works natively and has to be split across several app extensions.',
+          'The Family Controls entitlement needs a separate approval from Apple, and it had not arrived when 1.0 was due. I had already built a timer-only target on the same bundle id that does not need it, so the app shipped on time. Apple granted the entitlement a day later; version 1.1, with real app blocking and a Vietnamese interface, is ready.',
+          'Focus Duo pairs two people with an invite code and no accounts: you see each other\'s pea, cheer each other on and keep a shared streak. The Go backend only knows an anonymous device ID.',
         ],
-        facts: [['Role', 'Solo — native iOS, backend, game design'], ['Platform', 'iOS'], ['Stack', 'SwiftUI, FamilyControls, DeviceActivity, Go'], ['Status', 'Awaiting entitlement from Apple']],
+        facts: [['Role', 'Solo — native iOS, backend, game design'], ['Platform', 'iOS 17+'], ['Stack', 'SwiftUI, FamilyControls, WidgetKit, Go'], ['Version', '1.0 on the App Store · 1.1 with app blocking in preparation']],
+        features: [
+          { title: 'A pea that grows by the minute', text: 'Every focus session grows your pea, from seed to Golden Pod. Give up halfway and it is sad for an hour. That is all.' },
+          { title: 'A garden to collect', text: 'Once fully grown, plant it and hatch a mystery seed — eight peas to collect, from Common to Legendary.' },
+          { title: 'Insights without a paywall', text: 'Minutes per day, completion rate, your best time of day, where your focus went — all free and all on your iPhone.' },
+          { title: 'Pick a task, pick how strict', text: 'Name one thing to work on and choose 15 to 120 minutes. In Hard mode, leaving for 30 seconds ends the session.' },
+        ],
       },
       nuni: {
         name: 'Nuni HSK', kind: 'Web & mobile',
@@ -268,7 +306,7 @@ export const content: Record<Lang, Content> = {
     nav: { work: '作品', about: '关于', contact: '联系', menu: '菜单' },
     hero: {
       lines: ['我做应用，', '从一个*想法*开始，', '一直做到上架。'],
-      sub: 'Flutter 与 iOS 开发者。两款应用已上架 App Store，一款上架 Google Play，还有几款正在路上。',
+      sub: 'Flutter 与 iOS 开发者。四款应用已上架 App Store，一款上架 Google Play，还有几款正在路上。',
       place: '目前在岘港工作',
       sr: 'Vương Hỷ Khang — 独立应用开发者',
     },
@@ -289,7 +327,7 @@ export const content: Record<Lang, Content> = {
       label: '关于我',
       lines: ['慢一点，稳一点，', '像*树*一样，', '一年长一圈。'],
       paras: [
-        '我主要写 Flutter，需要深入 iOS 的时候用 Swift。后端一般是 Go 或 Node，数据按需求放在 Postgres、SQLite 或 Firebase。网页端用 Next.js。',
+        '我写得最久的是 Flutter。今年我的 iOS 应用全面转向 Swift 和 SwiftUI，需要单独做 Android 版时用 Jetpack Compose。后端一般是 Go 或 Node，数据按需求放在 Postgres、SQLite 或 Firebase。网页端用 Next.js。',
         '我最擅长的，大概是把一个产品真正送出门：通过 Apple 和 Google 的审核、应用内支付、证书、隐私政策、商店截图——这些没人喜欢做的事，少了任何一件，应用都上不了架。',
       ],
       journey: [
@@ -297,12 +335,23 @@ export const content: Record<Lang, Content> = {
         ['2023', '遇到 Flutter，就留了下来。为了学习不停地做小应用，大部分还放在 GitHub 上。'],
         ['2024', '螃蟹收购账本投入使用。第一次有人每天依赖我写的软件。'],
         ['2025', 'SmartMeal AI 通过 Apple 审核。第一款署我名字的 App Store 应用。'],
-        ['2026', '发布「学潮州话」和 DoneDrop。开始用原生 Swift 写 Peapod。'],
+        ['2026', '发布「学潮州话」、DoneDrop、Peapod 和 Ganba。后两款完全用 Swift 编写。'],
         ['2028', '计划在胡志明市开一间小工作室，做应用和游戏。'],
       ],
     },
     footer: { lines: ['一起做点', '*有意思*的事吧'], write: '给我写信', copied: '邮箱地址已复制', version: '版本', time: '越南时间', storeName: 'App Store 开发者名' },
     projects: {
+      ganba: {
+        name: 'Ganba', kind: 'App Store', linkLabel: '在 App Store 查看',
+        lead: '从 N5 到 N1 的 JLPT 备考应用：做一套模拟题，看清离及格还差多少分，再专门练拉低分数的部分。',
+        body: [
+          'Ganba 先用大约三分钟、八道题做一次测评，估算分数，再把学习计划排到考试当天。200 多套练习题完全按 JLPT 格式，像真实考试一样分部分计时，听力配有音频，中途退出也不会丢失作答。',
+          '所有进度都存在设备上的 SQLite 里，不需要账号；用 Apple 登录只是为了可选的同步。服务器从不挡在学习路径上：断网时照样能做题、买 Pro、解锁内容。',
+          '最难的是内容。AI 起草的题目必须经过两个不同模型的交叉检查才能发布，AI 写的解析在应用里会明确标注，流水线还会自动拦下任何使用权不明的素材。',
+          'Ganba 与面向零基础学习者的 Hiyoko 放在同一个仓库，两款应用共用一个 Swift package。Ganba 的 Android 版正在用 Jetpack Compose 编写。',
+        ],
+        facts: [['角色', '独立完成——iOS、Android、后端、内容流水线'], ['平台', 'iOS 17+ · Android 开发中'], ['技术', 'SwiftUI, GRDB, FSRS, StoreKit 2, Go, Jetpack Compose'], ['版本', '1.0.2 · 2026 年 10 月发布']],
+      },
       tieu: {
         name: '学潮州话', kind: 'App Store', linkLabel: '在 App Store 查看',
         lead: '一款为越南人做的潮州话学习应用。做它的原因很简单：几乎找不到用越南语写的潮州话教材。',
@@ -344,13 +393,20 @@ export const content: Record<Lang, Content> = {
         facts: [['角色', '独立完成——产品、应用、媒体后端'], ['平台', 'Android · iOS 准备中'], ['技术', 'Flutter, Firebase, Fastlane, Python'], ['状态', '已上架 Google Play']],
       },
       pea: {
-        name: 'Peapod', kind: '即将发布',
-        lead: '设定专注时间，手机锁住让你分心的应用，一颗小豆子随着你坚持的每一分钟慢慢长大。',
+        name: 'Peapod', kind: 'App Store', linkLabel: '在 App Store 查看',
+        lead: '一个专注计时器，配一颗小豆子，你每坚持一分钟它就长大一点。免费，无需登录。',
         body: [
-          '和之前的应用不同，Peapod 完全用 SwiftUI 写，而不是 Flutter。原因很简单：Screen Time API 只能在原生环境使用，而且要拆成四个独立的 App Extension 才能屏蔽其他应用。',
-          '后端是一个很小的 Go 服务。最花时间的反而是养豆子的循环——怎样让人想回来，又不觉得被逼着。应用正在等 Apple 批准 Family Controls 权限。',
+          'Peapod 是我第一款完全用 SwiftUI 而不是 Flutter 写的应用，因为我想用 Screen Time API 屏蔽让人分心的应用——这只能在原生环境做，而且要拆成好几个独立的 App Extension。',
+          'Family Controls 权限需要 Apple 单独审批，1.0 提交时还没批下来。我事先做好了一个同 bundle id、不需要该权限的「仅计时」target，所以应用按时上架。一天后 Apple 批准了权限；带真正应用屏蔽和越南语界面的 1.1 版已经准备好。',
+          'Focus Duo 用一个邀请码让两个人配对，不需要账号：互相看到对方的豆子、互相打气、一起保持连续天数。Go 后端只知道一个匿名的设备 ID。',
         ],
-        facts: [['角色', '独立完成——原生 iOS、后端、游戏设计'], ['平台', 'iOS'], ['技术', 'SwiftUI, FamilyControls, DeviceActivity, Go'], ['状态', '等待 Apple 批准权限']],
+        facts: [['角色', '独立完成——原生 iOS、后端、游戏设计'], ['平台', 'iOS 17+'], ['技术', 'SwiftUI, FamilyControls, WidgetKit, Go'], ['版本', 'App Store 1.0 · 带应用屏蔽的 1.1 准备中']],
+        features: [
+          { title: '一分钟一分钟长大的豆子', text: '每次专注都让豆子长大一点，从种子长到金豆荚。中途放弃，豆子会难过一小时，仅此而已。' },
+          { title: '可以收集的花园', text: '豆子长满后种下去，孵出一颗神秘种子——从普通到传说，一共八种豆子可以收集。' },
+          { title: '不设付费墙的统计', text: '每天的分钟数、完成率、最佳专注时段、时间花在了哪里——全部免费，全部留在你的 iPhone 上。' },
+          { title: '选一件事，选严格程度', text: '写下要做的一件事，选 15 到 120 分钟。困难模式下，离开应用超过 30 秒就算失败。' },
+        ],
       },
       nuni: {
         name: 'Nuni HSK', kind: '网页与移动端',
