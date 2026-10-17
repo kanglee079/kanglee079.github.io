@@ -1,6 +1,6 @@
 # Five apps + motion upgrade
 
-Status: in progress · Branch: main · Deploy: GitHub Pages (kanglee079.github.io)
+Status: done (2026-10-18) · Branch: main · Deploy: GitHub Pages (kanglee079.github.io)
 
 ## Outcome
 The portfolio reflects all five App Store apps with current, verified facts, and gains
@@ -34,3 +34,8 @@ richer motion that stays smooth on iOS Safari.
 - Scripted full-page scroll in the browser pane reports p95 frame time near 16.7ms
 - Reduced-motion users get static, readable content
 - Built, committed (conventional, no AI references), pushed, Pages build verified
+
+## Result
+- Shipped in commits 3cfaf7e and the follow-up fix commit; Pages build verified
+- Headless Chrome (software compositing, 4x CPU throttle at 390px): full-page scroll avg 16.6ms, p95 16.7ms, 0 frames over 33ms
+- Not verified on a real iPhone; the clip-path growth and WebGL bend were seen only at rest

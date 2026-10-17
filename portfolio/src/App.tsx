@@ -654,7 +654,7 @@ function HowIBuild() {
   const { lang } = useT()
   const h = how[lang]
   return (
-    <section className="cv-auto border-t border-[var(--hair)]">
+    <section className="border-t border-[var(--hair)]">
       <div className="wrap py-[clamp(90px,12vw,170px)]">
         <div className="grid gap-x-10 gap-y-8 md:grid-cols-12">
           <p className="mono text-[var(--grey)] md:col-span-3">{h.label}</p>
@@ -687,7 +687,7 @@ function HowIBuild() {
 function Archive() {
   const { t } = useT()
   return (
-    <section className="cv-auto wrap py-[clamp(90px,12vw,170px)]">
+    <section className="wrap py-[clamp(90px,12vw,170px)]">
       <div className="grid gap-10 md:grid-cols-12">
         <div className="md:col-span-3">
           <p className="mono text-[var(--grey)]">{t.archive.label}</p>
@@ -805,7 +805,7 @@ function CaseStudy({ p, from, onClose, onNext }: { p: Proj; from?: Rect; onClose
         </div>
         <div style={{ background: p.panel, color: p.ink }}>
           <div className="wrap flex flex-wrap items-end gap-x-8 gap-y-6 pb-[clamp(36px,5vw,70px)] pt-[clamp(40px,7vw,110px)]">
-            {p.icon && <motion.img layoutId={touch ? undefined : `icon-${p.id}`} src={p.icon} alt="" className="h-[clamp(72px,9vw,128px)] w-[clamp(72px,9vw,128px)] rounded-[22%] shadow-[0_24px_50px_-24px_rgba(0,0,0,.45)]" transition={{ duration: 0.9, ease: SWIFT }} />}
+            {p.icon && <motion.img layoutId={touch || !from ? undefined : `icon-${p.id}`} src={p.icon} alt="" className="h-[clamp(72px,9vw,128px)] w-[clamp(72px,9vw,128px)] rounded-[22%] shadow-[0_24px_50px_-24px_rgba(0,0,0,.45)]" transition={{ duration: 0.9, ease: SWIFT }} />}
             <div>
               <p className="mono opacity-60">{p.kind} · {p.year}</p>
               <h2 className="display mt-3 text-[clamp(40px,9vw,140px)]"><Lines delay={0.45} lines={[p.name]} /></h2>
