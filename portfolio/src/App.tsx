@@ -1,9 +1,11 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode, type MouseEvent as RMouseEvent } from 'react'
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode, type MouseEvent as RMouseEvent } from 'react'
 import {
   AnimatePresence, motion, useAnimationFrame, useInView, useMotionValue, useMotionValueEvent, useReducedMotion,
   useScroll, useSpring, useTransform, useVelocity, wrap,
 } from 'framer-motion'
 import Lenis from 'lenis'
+import { flushSync } from 'react-dom'
+import { createCursorPreviewGL, type CursorPreviewGL } from './cursor-preview-gl'
 import { APPSTORE, EMAIL, GITHUB, LANGS, PLAYSTORE, content, meta, type Content, type Lang, type Meta, type PText } from './data'
 import { extra, how, tech } from './tech'
 
@@ -12,6 +14,8 @@ const SWIFT = [0.7, 0, 0.2, 1] as const
 let lenis: Lenis | null = null
 
 type Proj = Meta & PText & { tech: string[] }
+type Rect = { top: number; left: number; width: number; height: number }
+const SEAL = '#B4412E'
 const I18n = createContext<{ lang: Lang; t: Content; setLang: (l: Lang) => void; projects: Proj[]; touch: boolean }>(null as never)
 const useT = () => useContext(I18n)
 
@@ -45,6 +49,23 @@ function Fade({ children, delay = 0, className = '' }: { children: ReactNode; de
   )
 }
 
+/** Mục danh sách hiện ra khi cuộn. Màn cảm ứng: CSS animation-timeline (chạy trên compositor), máy tính: Motion. */
+function RevealLi({ kind, delay = 0, className = '', children }: { kind: 'rise' | 'slide' | 'draw'; delay?: number; className?: string; children: ReactNode }) {
+  const { touch } = useT()
+  if (touch) return <li className={`sd-${kind} ${className}`}>{children}</li>
+  const from = kind === 'slide' ? { opacity: 0, x: -18 } : { opacity: 0, y: kind === 'draw' ? 10 : 16 }
+  return (
+    <motion.li className={className} initial={from} whileInView={{ opacity: 1, x: 0, y: 0 }}
+      viewport={{ once: true, margin: '0px 0px -10% 0px' }} transition={{ duration: 0.85, ease: EXPO, delay }}>
+      {children}
+      {kind === 'draw' && (
+        <motion.span aria-hidden className="absolute inset-x-0 bottom-0 h-px origin-left bg-[var(--hair)]" initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
+          viewport={{ once: true, margin: '0px 0px -10% 0px' }} transition={{ duration: 1.1, ease: EXPO, delay: delay + 0.1 }} />
+      )}
+    </motion.li>
+  )
+}
+
 function Magnetic({ children, strength = 0.35 }: { children: ReactNode; strength?: number }) {
   const { touch } = useT()
   const x = useMotionValue(0), y = useMotionValue(0)
@@ -65,7 +86,8 @@ function Roll({ children }: { children: ReactNode }) {
 /** Ảnh chụp app: bản 380px cho điện thoại, 600px cho máy tính */
 function Shot({ src, className = '', sizes = '(max-width: 768px) 60vw, 260px', alt = '', eager = false }: { src: string; className?: string; sizes?: string; alt?: string; eager?: boolean }) {
   const sm = src.replace('.jpg', '-sm.jpg')
-  return <img src={src} srcSet={`${sm} 380w, ${src} 600w`} sizes={sizes} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" className={className} draggable={false} />
+  const [w, h] = src.includes('donedrop') ? [618, 1100] : [600, 1304]
+  return <img src={src} srcSet={`${sm} 380w, ${src} 600w`} sizes={sizes} width={w} height={h} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" className={className} draggable={false} />
 }
 
 function useClock() {
@@ -97,10 +119,10 @@ function lockBody(on: boolean) {
 function LangSwitch({ dark = false }: { dark?: boolean }) {
   const { lang, setLang } = useT()
   return (
-    <div className="mono flex items-center gap-3" role="group" aria-label="Language">
+    <div className="mono -mx-3 flex items-center" role="group" aria-label="Language">
       {LANGS.map((l) => (
         <button key={l.id} onClick={() => setLang(l.id)} aria-pressed={lang === l.id} title={l.name}
-          className={`transition-opacity duration-300 ${lang === l.id ? 'link-on opacity-100' : 'opacity-45 hover:opacity-100'} ${dark ? 'text-[var(--paper)]' : ''}`}>{l.short}</button>
+          className={`-my-3 grid min-h-[44px] min-w-[38px] place-items-center px-1.5 transition-opacity duration-300 ${lang === l.id ? 'opacity-100' : 'opacity-45 hover:opacity-100'} ${dark ? 'text-[var(--paper)]' : ''}`}><span className={lang === l.id ? 'link-on' : ''}>{l.short}</span></button>
       ))}
     </div>
   )
@@ -325,7 +347,7 @@ function Intro() {
 /* work index                                                        */
 /* ---------------------------------------------------------------- */
 
-function WorkIndex({ onOpen }: { onOpen: (id: string) => void }) {
+function WorkIndex({ onOpen }: { onOpen: (id: string, from?: Rect) => void }) {
   const { t, projects, touch } = useT()
   const [active, setActive] = useState<number | null>(null)
   const [last, setLast] = useState(0)
@@ -333,6 +355,26 @@ function WorkIndex({ onOpen }: { onOpen: (id: string) => void }) {
   const x = useSpring(mx, { stiffness: 120, damping: 20, mass: 0.7 }), y = useSpring(my, { stiffness: 120, damping: 20, mass: 0.7 })
   const lx = useSpring(mx, { stiffness: 260, damping: 24 }), ly = useSpring(my, { stiffness: 260, damping: 24 })
   const on = active !== null
+  const canvas = useRef<HTMLCanvasElement>(null)
+  const gl = useRef<CursorPreviewGL | null>(null)
+  const glInit = useRef(false)
+  const [glReady, setGlReady] = useState(false)
+  const ensureGL = () => {
+    if (glInit.current || touch || !canvas.current) return
+    glInit.current = true
+    createCursorPreviewGL(canvas.current, projects.map((p) => ({ panel: p.panel, ink: p.ink, shot: p.shots?.[0], name: p.name })))
+      .then((r) => { if (r) { gl.current = r; setGlReady(true) } })
+      .catch(() => { /* giữ bản DOM */ })
+  }
+  useEffect(() => () => gl.current?.destroy(), [])
+  useEffect(() => {
+    const g = gl.current
+    if (!g) return
+    if (on) { g.show(last); g.start(); return }
+    const id = setTimeout(() => g.stop(), 500)
+    return () => clearTimeout(id)
+  }, [on, last, glReady])
+  useMotionValueEvent(x, 'change', (v) => gl.current?.setVelocity((mx.get() - v) / 260, (my.get() - y.get()) / 260))
   return (
     <section id="work" className="relative pb-[clamp(70px,9vw,130px)]" onMouseMove={touch ? undefined : (e) => { mx.set(e.clientX); my.set(e.clientY) }}>
       <div className="wrap">
@@ -342,10 +384,11 @@ function WorkIndex({ onOpen }: { onOpen: (id: string) => void }) {
         <ul onMouseLeave={() => setActive(null)}>
           {projects.map((p, i) => (
             <li key={p.id} className="border-b border-[var(--hair)]">
-              <button onClick={() => onOpen(p.id)} onMouseEnter={() => { setActive(i); setLast(i) }} onFocus={() => { setActive(i); setLast(i) }}
+              <button onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setActive(null); onOpen(p.id, { top: r.top, left: r.left, width: r.width, height: r.height }) }}
+                onMouseEnter={() => { ensureGL(); setActive(i); setLast(i) }} onFocus={() => { setActive(i); setLast(i) }}
                 className="group grid w-full grid-cols-[1fr_auto] items-center gap-5 py-[clamp(22px,3.3vw,52px)] transition-opacity duration-500 active:opacity-60" style={{ opacity: on && active !== i ? 0.3 : 1 }}>
                 <span className="display flex items-center gap-[.35em] text-[clamp(30px,6vw,96px)] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-x-[.22em]">
-                  {p.icon && <img src={p.icon} alt="" className="hidden h-[.62em] w-[.62em] rounded-[22%] sm:block" />}{p.name}
+                  {p.icon && <motion.img layoutId={touch ? undefined : `icon-${p.id}`} src={p.icon} alt="" className="hidden h-[.62em] w-[.62em] rounded-[22%] sm:block" />}{p.name}
                 </span>
                 <span className="flex items-center gap-4 text-right transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-x-[1.2em]">
                   <span><span className="block text-[clamp(14px,1.2vw,18px)]">{p.kind}</span><span className="mono text-[var(--grey)]">{p.year}</span></span>
@@ -362,7 +405,8 @@ function WorkIndex({ onOpen }: { onOpen: (id: string) => void }) {
         <>
           <motion.div aria-hidden className="pointer-events-none fixed left-0 top-0 z-40 hidden h-[430px] w-[360px] overflow-hidden will-change-transform md:block"
             style={{ x, y, translateX: '-50%', translateY: '-50%' }} initial={false} animate={{ scale: on ? 1 : 0 }} transition={{ duration: 0.45, ease: SWIFT }}>
-            <div className="h-full w-full transition-transform duration-[650ms] ease-[cubic-bezier(.7,0,.2,1)]" style={{ transform: `translate3d(0,-${last * 100}%,0)` }}>
+            <canvas ref={canvas} className="absolute inset-0 z-10 h-full w-full" style={{ opacity: glReady ? 1 : 0 }} />
+            <div className="h-full w-full transition-transform duration-[650ms] ease-[cubic-bezier(.7,0,.2,1)]" style={{ transform: `translate3d(0,-${last * 100}%,0)`, visibility: glReady ? 'hidden' : 'visible' }}>
               {projects.map((p) => (
                 <div key={p.id} className="grid h-full w-full place-items-center" style={{ background: p.panel, color: p.ink }}>
                   {p.shots ? <Shot src={p.shots[0]} sizes="200px" className="h-[84%] w-auto rounded-[22px]" /> : <span className="display px-8 text-center text-[42px]">{p.name}</span>}
@@ -384,8 +428,8 @@ function WorkIndex({ onOpen }: { onOpen: (id: string) => void }) {
 
 const pick = (id: string, n: number) => { const m = meta.find((x) => x.id === id)!; return { src: m.shots![n], bg: m.panel } }
 const REEL = [
-  [pick('tieu', 1), pick('meal', 0), pick('pea', 0), pick('drop', 0), pick('tieu', 3)],
-  [pick('meal', 2), pick('tieu', 2), pick('drop', 1), pick('pea', 1), pick('meal', 1)],
+  [pick('hiyoko', 0), pick('ganba', 1), pick('tieu', 1), pick('pea', 0), pick('meal', 0), pick('hiyoko', 2)],
+  [pick('ganba', 0), pick('hiyoko', 1), pick('drop', 0), pick('pea', 1), pick('tieu', 2), pick('ganba', 2)],
 ]
 
 function Reel() {
@@ -408,14 +452,14 @@ function Reel() {
 }
 
 /** Điện thoại: mỗi app một thẻ dính ở đầu màn hình, thẻ sau đè lên thẻ trước — chỉ dùng position: sticky */
-function StackCards({ onOpen }: { onOpen: (id: string) => void }) {
+function StackCards({ onOpen }: { onOpen: (id: string, from?: Rect) => void }) {
   const { projects, t } = useT()
   const items = projects.filter((p) => p.shots)
   return (
     <div className="wrap pb-[14vh]">
       {items.map((p, i) => (
         <div key={p.id} className="sticky" style={{ top: `calc(env(safe-area-inset-top, 0px) + ${64 + i * 12}px)`, marginBottom: i === items.length - 1 ? 0 : '18vh' }}>
-          <button onClick={() => onOpen(p.id)} className="block w-full overflow-hidden rounded-[22px] text-left shadow-[0_-8px_30px_-16px_rgba(0,0,0,.25)]" style={{ background: p.panel, color: p.ink }}>
+          <button onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); onOpen(p.id, { top: r.top, left: r.left, width: r.width, height: r.height }) }} className="block w-full overflow-hidden rounded-[22px] text-left shadow-[0_-8px_30px_-16px_rgba(0,0,0,.25)]" style={{ background: p.panel, color: p.ink }}>
             <div className="flex items-center justify-between px-5 pt-5">
               <div className="flex items-center gap-3"><img src={p.icon} alt="" className="h-11 w-11 rounded-[22%]" /><div><p className="text-[19px] leading-tight">{p.name}</p><p className="mono mt-0.5 opacity-60">{p.kind} · {p.year}</p></div></div>
               <span className="mono opacity-60">{t.work.view} →</span>
@@ -493,6 +537,116 @@ function Spotlight({ p, onOpen }: { p: Proj; onOpen: (id: string) => void }) {
 }
 
 /* ---------------------------------------------------------------- */
+/* đã phát hành — mỗi bản lên store là một con dấu                    */
+/* ---------------------------------------------------------------- */
+
+const shipKey = (d: string) => (d.length === 4 ? `${d}-06-01` : d)
+function fmtShip(d: string, lang: Lang) {
+  if (d.length === 4) return d
+  const [y, m, dd] = d.split('-').map(Number)
+  const loc = lang === 'zh' ? 'zh-CN' : lang === 'vi' ? 'vi-VN' : 'en-GB'
+  return new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(Date.UTC(y, m - 1, dd)))
+}
+
+/** Con dấu đóng xuống khi vé vào khung nhìn: phóng to, nghiêng, rồi nện xuống giấy */
+function Stamp({ label, year }: { label: string; year: string }) {
+  return (
+    <motion.div aria-hidden className="pointer-events-none absolute right-5 top-5 z-10 grid h-[92px] w-[92px] place-items-center rounded-full"
+      style={{ color: SEAL, border: `2px solid ${SEAL}` }}
+      variants={{
+        idle: { opacity: 0, scale: 1.9, rotate: -30 },
+        stamped: { opacity: [0, 1, 0.88], scale: [1.9, 0.94, 1], rotate: [-30, -8, -11], transition: { duration: 0.5, times: [0, 0.7, 1], ease: 'easeOut', delay: 0.15 } },
+      }}>
+      <span className="absolute inset-[5px] rounded-full" style={{ border: `1px solid ${SEAL}` }} />
+      <span className="mono text-center text-[9.5px] leading-[1.35]">{label}<br /><span className="text-[17px] tracking-normal">{year}</span></span>
+    </motion.div>
+  )
+}
+
+function ShipCard({ p }: { p: Proj }) {
+  const { t, lang } = useT()
+  const s = p.shipped!
+  return (
+    <motion.article initial="idle" whileInView="stamped" viewport={{ once: true, amount: 0.75 }}
+      className="relative flex w-[min(80vw,390px)] shrink-0 snap-center flex-col overflow-hidden rounded-[18px] border border-[var(--hair)] bg-[#FAF9F4]">
+      <Stamp label={t.ledger.label} year={s.date.slice(0, 4)} />
+      <div className="p-6 pb-5">
+        <div className="flex items-center gap-3">
+          {p.icon && <img src={p.icon} alt="" className="h-11 w-11 rounded-[22%]" />}
+          <span className="mono text-[var(--grey)]">{s.store}</span>
+        </div>
+        <h3 className="display mt-7 text-[clamp(30px,2.8vw,42px)]">{p.name}</h3>
+        <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-dashed border-[var(--hair)] pt-4">
+          <div><dt className="mono text-[var(--grey)]">{t.ledger.first}</dt><dd className="m-0 mt-1 tabular-nums">{fmtShip(s.date, lang)}</dd></div>
+          <div><dt className="mono text-[var(--grey)]">{t.ledger.current}</dt><dd className="m-0 mt-1 tabular-nums">v{s.version}</dd></div>
+        </dl>
+      </div>
+      <div className="relative mt-auto h-[clamp(130px,21vh,210px)] overflow-hidden" style={{ background: p.panel }}>
+        {p.shots && <Shot src={p.shots[0]} sizes="180px" className="absolute left-1/2 top-6 w-[46%] -translate-x-1/2 rounded-t-[18px]" />}
+      </div>
+    </motion.article>
+  )
+}
+
+function Ledger() {
+  const { t, projects, touch } = useT()
+  const reduce = useReducedMotion()
+  const narrow = useMedia('(max-width: 767px)')
+  const pinned = !touch && !narrow && !reduce
+  const items = useMemo(() => projects.filter((p) => p.shipped).sort((a, b) => shipKey(a.shipped!.date).localeCompare(shipKey(b.shipped!.date))), [projects])
+  const sec = useRef<HTMLElement>(null)
+  const track = useRef<HTMLDivElement>(null)
+  const [dist, setDist] = useState(0)
+  useLayoutEffect(() => {
+    if (!pinned) return
+    const measure = () => { if (track.current) setDist(Math.max(0, track.current.scrollWidth - window.innerWidth)) }
+    measure()
+    const ro = new ResizeObserver(measure); if (track.current) ro.observe(track.current)
+    window.addEventListener('resize', measure)
+    return () => { ro.disconnect(); window.removeEventListener('resize', measure) }
+  }, [pinned, items.length])
+  const { scrollYProgress } = useScroll({ target: sec, offset: ['start start', 'end end'] })
+  const x = useTransform(scrollYProgress, (v) => -v * dist)
+  const bar = useTransform(scrollYProgress, [0, 1], [0, 1])
+
+  const head = (
+    <div className="wrap grid gap-x-10 gap-y-5 md:grid-cols-12">
+      <p className="mono text-[var(--grey)] md:col-span-3">{t.ledger.label} · {String(items.length).padStart(2, '0')}</p>
+      <div className="md:col-span-9">
+        <h2 className="display max-w-[18ch] text-[clamp(32px,4.4vw,64px)]"><Lines lines={[<Rich key="t" s={t.ledger.title} />]} /></h2>
+        <Fade className="mt-4 max-w-[54ch] text-[var(--grey)]">{t.ledger.note}</Fade>
+      </div>
+    </div>
+  )
+  const cards = (
+    <>
+      {items.map((p) => <ShipCard key={p.id} p={p} />)}
+      <article className="flex w-[min(80vw,390px)] shrink-0 snap-center flex-col justify-between rounded-[18px] border border-dashed border-[#B9B7AE] p-6">
+        <p className="mono text-[var(--grey)]">{t.ledger.next}</p>
+        <ul className="mt-10 space-y-4">{t.ledger.nextItems.map((n) => <li key={n} className="text-[clamp(20px,1.8vw,26px)] leading-[1.3] tracking-[-0.02em]">{n}</li>)}</ul>
+      </article>
+    </>
+  )
+  if (!pinned) {
+    return (
+      <section className="border-t border-[var(--hair)] py-[clamp(80px,12vw,160px)]">
+        {head}
+        <div className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[clamp(20px,4.5vw,64px)] pb-4 [scroll-padding-inline:clamp(20px,4.5vw,64px)]" data-lenis-prevent>{cards}</div>
+      </section>
+    )
+  }
+  return (
+    <section ref={sec} className="relative border-t border-[var(--hair)]" style={{ height: `calc(100svh + ${dist}px)` }}>
+      <div className="sticky top-0 flex h-[100svh] flex-col justify-center gap-[clamp(28px,5vh,56px)] overflow-hidden">
+        {head}
+        <motion.div ref={track} style={{ x }} className="flex w-max items-stretch gap-6 px-[clamp(20px,4.5vw,64px)]">{cards}</motion.div>
+        <div className="wrap"><div className="h-px bg-[var(--hair)]"><motion.div className="h-px origin-left bg-[var(--ink)]" style={{ scaleX: bar }} /></div></div>
+      </div>
+    </section>
+  )
+}
+
+/* ---------------------------------------------------------------- */
 /* how + archive + about                                             */
 /* ---------------------------------------------------------------- */
 
@@ -511,11 +665,10 @@ function HowIBuild() {
         </div>
         <ol className="mt-[clamp(40px,6vw,80px)] grid border-t border-[var(--hair)] md:grid-cols-2 md:gap-x-10">
           {h.notes.map((n, i) => (
-            <motion.li key={n} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '0px 0px -10% 0px' }} transition={{ duration: 0.8, ease: EXPO, delay: (i % 2) * 0.06 }}
-              className="grid grid-cols-[44px_1fr] gap-4 border-b border-[var(--hair)] py-5">
+            <RevealLi key={n} kind="draw" delay={(i % 2) * 0.06} className="relative grid grid-cols-[44px_1fr] gap-4 py-5">
               <span className="mono pt-1 text-[var(--grey)]">{String(i + 1).padStart(2, '0')}</span>
               <span className="text-[16.5px] leading-[1.55]">{n}</span>
-            </motion.li>
+            </RevealLi>
           ))}
         </ol>
         <div className="mt-[clamp(40px,6vw,80px)] grid gap-x-10 gap-y-6 md:grid-cols-12">
@@ -542,12 +695,12 @@ function Archive() {
         </div>
         <ul className="border-t border-[var(--hair)] md:col-span-9">
           {t.archive.rows.map(([yr, name, note, stack], i) => (
-            <motion.li key={name} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: i * 0.04 }} className="group border-b border-[var(--hair)]">
+            <RevealLi key={name} kind="slide" delay={Math.min(i, 6) * 0.04} className="group border-b border-[var(--hair)]">
               <div className="grid grid-cols-[64px_1fr] items-baseline gap-x-6 gap-y-1 py-5 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-x-3 md:grid-cols-[90px_1.1fr_1.6fr_auto]">
                 <span className="mono text-[var(--grey)]">{yr}</span><span className="text-[19px]">{name}</span>
                 <span className="text-[var(--grey)] max-md:col-start-2">{note}</span><span className="mono text-[var(--grey)] max-md:col-start-2">{stack}</span>
               </div>
-            </motion.li>
+            </RevealLi>
           ))}
         </ul>
       </div>
@@ -568,11 +721,10 @@ function About() {
           </div>
           <ol className="md:col-span-6 md:col-start-7">
             {t.about.journey.map(([yr, tx], i) => (
-              <motion.li key={yr} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '0px 0px -10% 0px' }} transition={{ duration: 0.9, ease: EXPO, delay: i * 0.03 }}
-                className="grid grid-cols-[76px_1fr] gap-6 border-t border-[var(--hair)] py-7 last:border-b">
+              <RevealLi key={yr} kind="rise" delay={i * 0.03} className="grid grid-cols-[76px_1fr] gap-6 border-t border-[var(--hair)] py-7 last:border-b">
                 <span className="mono pt-1 text-[var(--grey)]">{yr}</span>
                 <span className={`text-[19px] leading-[1.5] ${yr === '2028' ? 'serif text-[22px]' : ''}`}>{tx}</span>
-              </motion.li>
+              </RevealLi>
             ))}
           </ol>
         </div>
@@ -630,8 +782,9 @@ function Footer() {
 /* case study                                                        */
 /* ---------------------------------------------------------------- */
 
-function CaseStudy({ p, onClose, onNext }: { p: Proj; onClose: () => void; onNext: () => void }) {
-  const { t, lang, projects } = useT()
+function CaseStudy({ p, from, onClose, onNext }: { p: Proj; from?: Rect; onClose: () => void; onNext: () => void }) {
+  const { t, lang, projects, touch } = useT()
+  const clipFrom = from && `inset(${from.top}px ${Math.max(0, window.innerWidth - from.left - from.width)}px ${Math.max(0, window.innerHeight - from.top - from.height)}px ${from.left}px)`
   const next = projects[(projects.findIndex((x) => x.id === p.id) + 1) % projects.length]
   const scroller = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -642,16 +795,25 @@ function CaseStudy({ p, onClose, onNext }: { p: Proj; onClose: () => void; onNex
   useEffect(() => { scroller.current?.scrollTo(0, 0) }, [p.id])
   return (
     <motion.div role="dialog" aria-modal="true" aria-label={p.name} className="fixed inset-0 z-[200]"
-      initial={{ y: '112%' }} animate={{ y: 0 }} exit={{ y: '112%' }} transition={{ duration: 0.95, ease: SWIFT }}>
-      <div aria-hidden className="absolute inset-x-[-10%] bottom-full h-[12vh] translate-y-px bg-[var(--paper)]" style={{ borderRadius: CAP_UP }} />
+      initial={clipFrom ? { clipPath: clipFrom } : { y: '112%' }}
+      animate={clipFrom ? { clipPath: 'inset(0px 0px 0px 0px)', transition: { duration: 0.9, ease: SWIFT } } : { y: 0, transition: { duration: 0.95, ease: SWIFT } }}
+      exit={{ y: '112%', transition: { duration: 0.7, ease: SWIFT } }}>
+      {!clipFrom && <div aria-hidden className="absolute inset-x-[-10%] bottom-full h-[12vh] translate-y-px bg-[var(--paper)]" style={{ borderRadius: CAP_UP }} />}
       <div ref={scroller} data-lenis-prevent className="no-scrollbar h-full overflow-y-auto overscroll-contain bg-[var(--paper)]">
         <div className="sticky top-0 z-10 border-b border-[var(--hair)] bg-[var(--paper)]" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
           <div className="wrap flex justify-between py-5"><span>{p.name}</span><button onClick={onClose} className="group active:opacity-60"><Roll>{t.work.close} ✕</Roll></button></div>
         </div>
-        <div className="wrap pb-20 pt-[clamp(40px,7vw,110px)]">
-          <p className="mono text-[var(--grey)]">{p.kind} · {p.year}</p>
-          <h2 className="display mt-5 text-[clamp(40px,9.5vw,150px)]"><Lines delay={0.5} lines={[p.name]} /></h2>
-          <div className="mt-[clamp(40px,6vw,90px)] grid gap-x-10 gap-y-12 md:grid-cols-12">
+        <div style={{ background: p.panel, color: p.ink }}>
+          <div className="wrap flex flex-wrap items-end gap-x-8 gap-y-6 pb-[clamp(36px,5vw,70px)] pt-[clamp(40px,7vw,110px)]">
+            {p.icon && <motion.img layoutId={touch ? undefined : `icon-${p.id}`} src={p.icon} alt="" className="h-[clamp(72px,9vw,128px)] w-[clamp(72px,9vw,128px)] rounded-[22%] shadow-[0_24px_50px_-24px_rgba(0,0,0,.45)]" transition={{ duration: 0.9, ease: SWIFT }} />}
+            <div>
+              <p className="mono opacity-60">{p.kind} · {p.year}</p>
+              <h2 className="display mt-3 text-[clamp(40px,9vw,140px)]"><Lines delay={0.45} lines={[p.name]} /></h2>
+            </div>
+          </div>
+        </div>
+        <div className="wrap pb-20 pt-[clamp(40px,6vw,90px)]">
+          <div className="grid gap-x-10 gap-y-12 md:grid-cols-12">
             <motion.dl initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.85, duration: 0.9 }} className="md:col-span-4">
               {p.facts.map(([k, v]) => <div key={k} className="border-t border-[var(--hair)] py-4 last:border-b"><dt className="mono text-[var(--grey)]">{k}</dt><dd className="m-0 mt-1.5">{v}</dd></div>)}
               {p.href && <a href={p.href} target="_blank" rel="noopener" className="link-on mt-7 inline-block">{p.linkLabel} ↗</a>}
@@ -696,13 +858,19 @@ function initialLang(): Lang {
 
 export default function App() {
   const [loading, setLoading] = useState(true)
-  const [openId, setOpenId] = useState<string | null>(null)
+  const [opened, setOpened] = useState<{ id: string; from?: Rect } | null>(null)
+  const openProject = useCallback((id: string, from?: Rect) => setOpened({ id, from }), [])
   const [lang, setLangState] = useState<Lang>(initialLang)
   const reduce = useReducedMotion()
   const touch = useMedia('(pointer: coarse)')
   const narrow = useMedia('(max-width: 767px)')
 
-  const setLang = useCallback((l: Lang) => { setLangState(l); try { localStorage.setItem('lang', l) } catch { /* ignore */ } }, [])
+  const setLang = useCallback((l: Lang) => {
+    try { localStorage.setItem('lang', l) } catch { /* ignore */ }
+    const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown }
+    if (doc.startViewTransition && !reduce) doc.startViewTransition(() => flushSync(() => setLangState(l)))
+    else setLangState(l)
+  }, [reduce])
   useEffect(() => { document.documentElement.lang = lang === 'zh' ? 'zh-Hans' : lang }, [lang])
 
   const ctx = useMemo(() => {
@@ -719,7 +887,8 @@ export default function App() {
   useEffect(() => { if (loading) { lockBody(true); window.scrollTo(0, 0) } else lockBody(false) }, [loading])
 
   const done = useCallback(() => setLoading(false), [])
-  const open = ctx.projects.find((p) => p.id === openId) ?? null
+  const open = ctx.projects.find((p) => p.id === opened?.id) ?? null
+  const nextId = (id: string) => ctx.projects[(ctx.projects.findIndex((x) => x.id === id) + 1) % ctx.projects.length].id
   return (
     <I18n.Provider value={ctx}>
       <AnimatePresence>{loading && <Preloader onDone={done} />}</AnimatePresence>
@@ -728,16 +897,17 @@ export default function App() {
       <main key={lang}>
         <Hero ready={!loading} />
         <Intro />
-        <WorkIndex onOpen={setOpenId} />
-        {narrow ? <StackCards onOpen={setOpenId} /> : <Reel />}
-        {ctx.projects.filter((p) => p.features).map((p) => <Spotlight key={p.id} p={p} onOpen={setOpenId} />)}
+        <WorkIndex onOpen={openProject} />
+        {narrow ? <StackCards onOpen={openProject} /> : <Reel />}
+        {ctx.projects.filter((p) => p.spot && p.features).map((p) => <Spotlight key={p.id} p={p} onOpen={openProject} />)}
+        <Ledger />
         <HowIBuild />
         <Archive />
         <About />
       </main>
       <Footer key={`f-${lang}`} />
       <AnimatePresence mode="wait">
-        {open && <CaseStudy key={open.id} p={open} onClose={() => setOpenId(null)} onNext={() => setOpenId(ctx.projects[(ctx.projects.findIndex((x) => x.id === open.id) + 1) % ctx.projects.length].id)} />}
+        {open && <CaseStudy key={open.id} p={open} from={opened?.from} onClose={() => setOpened(null)} onNext={() => setOpened({ id: nextId(open.id) })} />}
       </AnimatePresence>
     </I18n.Provider>
   )

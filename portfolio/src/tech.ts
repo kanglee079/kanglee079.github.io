@@ -6,13 +6,21 @@ export interface How { label: string; title: string; intro: string; notes: strin
 
 export const tech: Record<Lang, Record<string, string[]>> = {
   vi: {
+    hiyoko: [
+      'SwiftUI, khoảng 85.000 dòng Swift viết tay (không tính dữ liệu và file sinh tự động), chủ yếu ở bài học, thiết kế, dịch vụ và giữ chân người học',
+      'Dùng chung với Ganba một Swift package cho nội dung, đồng bộ và lịch ôn; hai app cùng khoảng 77.000 dòng test',
+      'Lịch ôn FSRS với các mức nhớ có tên; khi người học nghỉ lâu, chỉ đưa lại vài thẻ trước khi học tiếp',
+      'Thẻ lật 3D với cử chỉ vuốt để đóng dấu hanko, và một lớp sương che cách đọc có thể lau bằng ngón tay',
+      'Viết kana và kanji trên canvas, chấm điểm từng nét; đường cao độ hiển thị ngay trên thẻ từ',
+      'Bỏ RevenueCat ở bản 2.0, chỉ dùng StoreKit 2; một test khẳng định app không còn mang khoá hay SDK của dịch vụ đó',
+    ],
     ganba: [
-      'SwiftUI, khoảng 36.500 dòng Swift cho app và 15.800 dòng trong một Swift package dùng chung với app thứ hai',
+      'SwiftUI, khoảng 59.000 dòng Swift cho app và 20.000 dòng trong một Swift package dùng chung với Hiyoko (không tính file sinh tự động)',
       'Tiến độ lưu offline trong SQLite qua GRDB; Sign in with Apple chỉ để đồng bộ, không bắt buộc',
       'Ôn thẻ từ vựng và kanji bằng FSRS; StoreKit 2 cho gói Pro; widget đếm ngược ngày thi',
       'Chế độ thi giữ màn hình sáng và tính giờ từng phần như thi thật; làm dở thoát ra vẫn giữ bài',
       'Câu hỏi AI soạn phải qua kiểm tra chéo hai mô hình; pipeline có cổng chặn tài nguyên chưa rõ quyền sử dụng',
-      'Backend Go với pgx và goose; gói nội dung xuất lên Cloudflare R2; khoảng 15.000 dòng test Swift',
+      'Backend Go với pgx và goose, khoảng 13.000 dòng; gói nội dung xuất lên Cloudflare R2',
       'Bản Android viết bằng Jetpack Compose, khoảng 18.000 dòng Kotlin',
     ],
     tieu: [
@@ -66,13 +74,21 @@ export const tech: Record<Lang, Record<string, string[]>> = {
     ],
   },
   en: {
+    hiyoko: [
+      'SwiftUI, about 85,000 hand-written lines of Swift (data and generated files excluded), mostly lessons, design, services and retention',
+      'Shares a Swift package with Ganba for content, sync and reviews; the two apps carry about 77,000 lines of tests',
+      'FSRS reviews with named memory stages; after a long break only a few cards come back before new work',
+      '3D flip cards with a swipe-to-stamp hanko gesture and a fog over the reading that you wipe away with a finger',
+      'Kana and kanji written on a canvas and scored stroke by stroke; pitch lines drawn right on the word card',
+      'Dropped RevenueCat in 2.0 for StoreKit 2 alone; a test asserts the app no longer ships its key or SDK',
+    ],
     ganba: [
-      'SwiftUI, about 36,500 lines of Swift in the app plus 15,800 in a Swift package shared with a second app',
+      'SwiftUI, about 59,000 lines of Swift in the app plus 20,000 in a Swift package shared with Hiyoko (generated files excluded)',
       'Progress stored offline in SQLite via GRDB; Sign in with Apple only for optional sync',
       'Vocabulary and kanji reviews on FSRS; StoreKit 2 for Pro; an exam-countdown widget',
       'Exam mode keeps the screen awake and times each section like the real test; leaving mid-test keeps your answers',
       'AI-drafted questions must pass a cross-check by two models; the pipeline gates any asset with unclear usage rights',
-      'Go backend on pgx and goose; content packs exported to Cloudflare R2; about 15,000 lines of Swift tests',
+      'Go backend on pgx and goose, about 13,000 lines; content packs exported to Cloudflare R2',
       'An Android version in Jetpack Compose, about 18,000 lines of Kotlin',
     ],
     tieu: [
@@ -126,13 +142,21 @@ export const tech: Record<Lang, Record<string, string[]>> = {
     ],
   },
   zh: {
+    hiyoko: [
+      'SwiftUI，约 85,000 行手写 Swift（不含数据和自动生成的文件），主要是课程、设计、服务和留存模块',
+      '与 Ganba 共用负责内容、同步和复习的 Swift package；两款应用合计约 77,000 行测试',
+      'FSRS 复习，记忆阶段有明确名称；长时间没学，回来时只先拿几张卡热身',
+      '3D 翻转卡片，右滑盖 hanko 印章；读音上蒙一层雾，用手指擦开',
+      '在画布上书写假名和汉字，逐笔评分；音高线直接画在单词卡上',
+      '2.0 版去掉 RevenueCat，只用 StoreKit 2；有测试确认应用不再携带其密钥或 SDK',
+    ],
     ganba: [
-      'SwiftUI，应用约 36,500 行 Swift，另有约 15,800 行在与第二款应用共用的 Swift package 中',
+      'SwiftUI，应用约 59,000 行 Swift，另有约 20,000 行在与 Hiyoko 共用的 Swift package 中（不含自动生成的文件）',
       '进度离线存于 SQLite（GRDB）；Apple 登录仅用于可选同步',
       '词汇和汉字复习用 FSRS；Pro 订阅用 StoreKit 2；有考试倒计时小组件',
       '考试模式保持屏幕常亮，像真实考试一样分部分计时；中途退出不丢作答',
       'AI 起草的题目必须经过两个模型交叉检查；流水线会拦下使用权不明的素材',
-      'Go 后端使用 pgx 和 goose；内容包导出到 Cloudflare R2；约 15,000 行 Swift 测试',
+      'Go 后端使用 pgx 和 goose，约 13,000 行；内容包导出到 Cloudflare R2',
       'Android 版用 Jetpack Compose 编写，约 18,000 行 Kotlin',
     ],
     tieu: [
@@ -193,6 +217,7 @@ export const how: Record<Lang, How> = {
     title: 'Vài quyết định kỹ thuật tôi *thấy đáng kể*.',
     intro: 'Mỗi dòng dưới đây là một thứ có thật trong mã nguồn, không phải khẩu hiệu.',
     notes: [
+      'Hai app tiếng Nhật dùng chung một Swift package cho nội dung, đồng bộ và lịch ôn FSRS.',
       'Câu hỏi AI soạn chỉ được xuất bản sau khi hai mô hình khác nhau cùng kiểm tra.',
       'Học, mua và mở khoá không bao giờ phải chờ server; mất mạng vẫn làm đề được.',
       'Từ điển trong SQLCipher AES-256; âm thanh AES-GCM, tên file ràng buộc làm AAD.',
@@ -201,7 +226,6 @@ export const how: Record<Lang, How> = {
       'Chuỗi chứng chỉ JWS của Apple xác thực bằng thư viện chuẩn Go, không thêm dependency.',
       'Shield của Screen Time bật hai lần, trong app và từ extension, để không lỡ giây nào.',
       'Extension chặn app giữ dưới 6 MB: không StoreKit, không quảng cáo, không mạng.',
-      'Đồng hồ máy nhảy quá năm phút thì phiên tập trung bị coi là bỏ dở.',
       'Biên nhận StoreKit 2 được Worker xác thực, ghi sổ D1, rồi mới kết thúc giao dịch.',
       'Tín dụng AI giữ chỗ phía server, chỉ trừ khi thao tác thành công.',
       'Lịch ôn tập FSRS viết bằng Go; autosave kiểu CAS giữ hai thiết bị nhất quán.',
@@ -222,6 +246,7 @@ export const how: Record<Lang, How> = {
     title: 'A few engineering decisions *I stand behind*.',
     intro: 'Every line below is something real in the source, not a slogan.',
     notes: [
+      'Two Japanese apps share one Swift package for content, sync and FSRS reviews.',
       'AI-drafted questions are published only after two different models have checked them.',
       'Studying, buying and unlocking never wait on a server; tests work offline.',
       'Dictionary in SQLCipher AES-256; audio in AES-GCM with the filename bound as AAD.',
@@ -230,7 +255,6 @@ export const how: Record<Lang, How> = {
       'Apple\'s JWS certificate chain verified with the Go standard library, no extra dependency.',
       'The Screen Time shield is armed twice, in-app and from the extension, so no second is lost.',
       'The blocking extension stays under 6 MB: no StoreKit, no ads, no networking.',
-      'A clock jump over five minutes marks a focus session abandoned.',
       'StoreKit 2 receipts are verified by a Worker and written to D1 before the transaction finishes.',
       'AI credits are reserved server-side and charged only when the action succeeds.',
       'FSRS scheduling in Go; CAS autosave keeps two devices consistent.',
@@ -251,6 +275,7 @@ export const how: Record<Lang, How> = {
     title: '几个我*站得住脚*的技术决定。',
     intro: '下面每一条都真实存在于代码里，不是口号。',
     notes: [
+      '两款日语应用共用一个 Swift package，负责内容、同步和 FSRS 复习。',
       'AI 起草的题目，必须经过两个不同模型检查后才会发布。',
       '学习、购买和解锁从不等待服务器；断网也能做题。',
       '词典存于 SQLCipher AES-256；音频用 AES-GCM，文件名作为 AAD 绑定。',
@@ -259,7 +284,6 @@ export const how: Record<Lang, How> = {
       '用 Go 标准库校验 Apple 的 JWS 证书链，不引入额外依赖。',
       'Screen Time 屏蔽启用两次——应用内和扩展内——一秒都不漏。',
       '屏蔽扩展保持在 6 MB 以下：没有 StoreKit，没有广告，没有网络。',
-      '系统时钟跳动超过五分钟，专注会话即判定为中断。',
       'StoreKit 2 收据先由 Worker 校验并写入 D1，交易才算完成。',
       'AI 额度在服务端预留，只有操作成功才扣除。',
       '用 Go 实现 FSRS 复习调度；CAS 式自动保存让两台设备保持一致。',

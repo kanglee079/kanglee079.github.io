@@ -11,17 +11,31 @@ export const PLAYSTORE = 'https://play.google.com/store/apps/developer?id=WangXi
 export const GITHUB = 'https://github.com/kanglee079'
 
 /* ---------- phần không phụ thuộc ngôn ngữ ---------- */
-export interface Meta { id: string; year: string; panel: string; ink: string; icon?: string; shots?: string[]; href?: string }
+export interface Meta {
+  id: string; year: string; panel: string; ink: string; icon?: string; shots?: string[]; href?: string
+  /** dòng trong mục "Đã phát hành": ngày lên store lần đầu (hoặc chỉ năm nếu store không công khai), bản hiện tại */
+  shipped?: { date: string; version: string; store: 'App Store' | 'Google Play' }
+  /** có phần giới thiệu với điện thoại ghim */
+  spot?: boolean
+}
 export const meta: Meta[] = [
-  { id: 'ganba', year: '2026', panel: '#1A2350', ink: '#F4F1EA', icon: 'assets/icon-ganba.jpg', href: 'https://apps.apple.com/vn/app/id6815570410',
+  { id: 'hiyoko', year: '2026', panel: '#FBEBD4', ink: '#3A2414', icon: 'assets/icon-hiyoko.jpg', href: 'https://apps.apple.com/vn/app/id6815570504', spot: true,
+    shipped: { date: '2026-10-17', version: '2.0.3', store: 'App Store' },
+    shots: ['assets/shot-hiyoko-1.jpg', 'assets/shot-hiyoko-2.jpg', 'assets/shot-hiyoko-3.jpg', 'assets/shot-hiyoko-4.jpg'] },
+  { id: 'ganba', year: '2026', panel: '#1A2350', ink: '#F4F1EA', icon: 'assets/icon-ganba.jpg', href: 'https://apps.apple.com/vn/app/id6815570410', spot: true,
+    shipped: { date: '2026-10-01', version: '1.1.0', store: 'App Store' },
     shots: ['assets/shot-ganba-1.jpg', 'assets/shot-ganba-2.jpg', 'assets/shot-ganba-3.jpg', 'assets/shot-ganba-4.jpg'] },
-  { id: 'tieu', year: '2026', panel: '#0F6E6A', ink: '#F2F7F4', icon: 'assets/icon-hoctiengtieu.png', href: 'https://apps.apple.com/vn/app/id6803075590',
+  { id: 'tieu', year: '2026', panel: '#0F6E6A', ink: '#F2F7F4', icon: 'assets/icon-hoctiengtieu.png', href: 'https://apps.apple.com/vn/app/id6803075590', spot: true,
+    shipped: { date: '2026-08-22', version: '1.2.0', store: 'App Store' },
     shots: ['assets/shot-hoctiengtieu-1.jpg', 'assets/shot-hoctiengtieu-2.jpg', 'assets/shot-hoctiengtieu-3.jpg', 'assets/shot-hoctiengtieu-4.jpg'] },
   { id: 'pea', year: '2026', panel: '#DDEFD6', ink: '#14301A', icon: 'assets/icon-peapod.jpg', href: 'https://apps.apple.com/vn/app/id6814148941',
+    shipped: { date: '2026-09-22', version: '1.0', store: 'App Store' },
     shots: ['assets/shot-peapod-1.jpg', 'assets/shot-peapod-2.jpg', 'assets/shot-peapod-3.jpg', 'assets/shot-peapod-4.jpg'] },
   { id: 'meal', year: '2025', panel: '#E9E2D0', ink: '#1C2B22', icon: 'assets/icon-smartmeal.png', href: 'https://apps.apple.com/vn/app/id6741747881',
+    shipped: { date: '2025-02-11', version: '2.1', store: 'App Store' },
     shots: ['assets/shot-smartmeal-4.jpg', 'assets/shot-smartmeal-1.jpg', 'assets/shot-smartmeal-3.jpg', 'assets/shot-smartmeal-2.jpg'] },
   { id: 'drop', year: '2026', panel: '#EAE1D8', ink: '#2B1712', icon: 'assets/icon-donedrop.png', href: 'https://play.google.com/store/apps/details?id=com.donedrop.app',
+    shipped: { date: '2026', version: '1.1.1', store: 'Google Play' },
     shots: ['assets/shot-donedrop-1.jpg', 'assets/shot-donedrop-2.jpg', 'assets/shot-donedrop-3.jpg'] },
   { id: 'nuni', year: '2026', panel: '#1B2A44', ink: '#EEF2FA' },
   { id: 'crab', year: '2024', panel: '#7A2E1F', ink: '#FBEFEA' },
@@ -37,6 +51,7 @@ export interface Content {
   archive: { label: string; note: string; rows: [string, string, string, string][] }
   about: { label: string; lines: string[]; paras: string[]; journey: [string, string][] }
   footer: { lines: string[]; write: string; copied: string; version: string; time: string; storeName: string }
+  ledger: { label: string; title: string; note: string; first: string; current: string; next: string; nextItems: string[] }
   projects: Record<string, PText>
 }
 
@@ -50,7 +65,7 @@ export const content: Record<Lang, Content> = {
     nav: { work: 'Dự án', about: 'Về tôi', contact: 'Liên hệ', menu: 'Menu' },
     hero: {
       lines: ['Tôi làm app,', 'từ *ý tưởng* cho tới', 'lúc nó lên store.'],
-      sub: 'Lập trình viên Flutter và iOS. Bốn app trên App Store, một app trên Google Play, vài app nữa đang trên đường tới.',
+      sub: 'Lập trình viên Flutter và iOS. Năm app trên App Store, một app trên Google Play, vài app nữa đang trên đường tới.',
       place: 'Đang làm việc tại Đà Nẵng',
       sr: 'Vương Hỷ Khang — lập trình viên ứng dụng độc lập',
     },
@@ -79,12 +94,29 @@ export const content: Record<Lang, Content> = {
         ['2023', 'Gặp Flutter và ở lại. Làm liên tục các app nhỏ để học — phần lớn vẫn nằm trên GitHub.'],
         ['2024', 'Sổ thu mua cua đi vào vận hành. Lần đầu tiên phần mềm của tôi có người dùng hằng ngày.'],
         ['2025', 'SmartMeal AI được Apple duyệt. App đầu tiên mang tên tôi trên App Store.'],
-        ['2026', 'Phát hành Học Tiếng Tiều, DoneDrop, Peapod và Ganba. Hai app sau cùng viết hoàn toàn bằng Swift.'],
+        ['2026', 'Phát hành Học Tiếng Tiều, DoneDrop, Peapod, Ganba và Hiyoko. Ba app sau cùng viết hoàn toàn bằng Swift.'],
         ['2028', 'Dự định mở một studio nhỏ làm app và game ở TP.HCM.'],
       ],
     },
+    ledger: { label: 'Đã phát hành', title: 'Mỗi lần lên store là *một con dấu*.', note: 'Ngày lên store lần đầu và phiên bản hiện tại. Google Play không công khai ngày đầu tiên nên DoneDrop chỉ ghi năm.', first: 'Lên store', current: 'Hiện tại', next: 'Đang trên đường', nextItems: ['Peapod 1.1 — chặn app bằng Screen Time', 'Ganba cho Android', 'Nuni HSK'] },
     footer: { lines: ['Mình cùng', 'làm *gì đó* nhé'], write: 'Viết cho tôi', copied: 'Đã chép địa chỉ email', version: 'Phiên bản', time: 'Giờ ở Việt Nam', storeName: 'Tên trên App Store' },
     projects: {
+      hiyoko: {
+        name: 'Hiyoko', kind: 'App Store', linkLabel: 'Xem trên App Store',
+        lead: 'App học tiếng Nhật cho người bắt đầu từ con số không: từ Hiragana, Katakana tới lộ trình N5–N1, có chú gà con Hiyo đi cùng.',
+        body: [
+          'Hiyoko dạy trước rồi mới hỏi: chữ nào chưa học luôn có romaji bên cạnh, kana mở dần theo từng bài, và không bao giờ có câu hỏi về thứ bạn chưa gặp. Mỗi vòng chỉ 3–4 phút.',
+          'Thẻ đã học đi vào lịch ôn FSRS với các mức nhớ có tên rõ ràng; nghỉ lâu quay lại thì app chỉ đưa vài thẻ trước khi học tiếp. Có giải đấu theo tuần và hai khiên giữ chuỗi ngày.',
+          'Hiyoko và Ganba chung một repo và một Swift package cho nội dung, đồng bộ và lịch ôn. Ở bản 2.0 tôi bỏ RevenueCat, thanh toán chỉ còn qua StoreKit của Apple, và có test khẳng định app không còn mang SDK đó.',
+        ],
+        facts: [['Vai trò', 'Một mình — app, nội dung, backend, phát hành'], ['Nền tảng', 'iOS 17+'], ['Công nghệ', 'SwiftUI, FSRS, StoreKit 2, Go'], ['Phiên bản', '2.0.3 · phát hành 17/10/2026']],
+        features: [
+          { title: 'Vòng học 3–4 phút', text: 'Bản đồ bài học đi từ kana tới N5–N1. Nút Tiếp tục gộp thẻ đến hạn, một vòng mới và phần thêm, nên bước tiếp theo luôn rõ ràng.' },
+          { title: 'Lật thẻ, đóng dấu hanko', text: 'Chạm để lật thẻ 3D, vuốt phải để đóng dấu khi đã nhớ. Một lớp sương che cách đọc; lau đi để xem trộm thì tính là chưa nhớ hẳn.' },
+          { title: 'Viết từng nét, được chấm điểm', text: 'Hiragana, Katakana và kanji: viết từng nét, app báo nét nào đúng, gần đúng hay cần xem lại.' },
+          { title: 'Nhìn thấy ngữ điệu', text: 'Từ nào có dữ liệu cao độ thì đường lên xuống hiện ngay trên thẻ, kèm giọng đọc của người bản xứ.' },
+        ],
+      },
       ganba: {
         name: 'Ganba', kind: 'App Store', linkLabel: 'Xem trên App Store',
         lead: 'App luyện thi JLPT từ N5 đến N1: làm đề thi thử, biết mình còn thiếu bao nhiêu điểm để đậu, rồi luyện đúng phần đang kéo điểm xuống.',
@@ -92,9 +124,15 @@ export const content: Record<Lang, Content> = {
           'Ganba mở đầu bằng một bài kiểm tra 8 câu trong khoảng ba phút, ước tính điểm rồi lên lịch học tới ngày thi. Hơn 200 đề luyện theo đúng định dạng JLPT, tính giờ từng phần như thi thật, phần nghe có âm thanh, làm dở thoát ra vẫn giữ nguyên bài.',
           'Mọi tiến độ nằm trong SQLite trên máy, không cần tài khoản; đăng nhập bằng Apple chỉ để đồng bộ nếu muốn. Server không nằm trên đường học: mất mạng vẫn làm đề, vẫn mua gói Pro, vẫn mở khoá.',
           'Phần khó nhất là nội dung. Câu hỏi do AI soạn phải qua kiểm tra chéo của hai mô hình khác nhau mới được xuất bản, lời giải do AI viết được gắn nhãn ngay trong app, và pipeline tự chặn mọi tài nguyên chưa rõ quyền sử dụng.',
-          'Ganba nằm chung một repo với Hiyoko, app cho người mới bắt đầu, hai app dùng chung một Swift package. Bản Android của Ganba đang được viết bằng Jetpack Compose.',
+          'Bản 1.1 ra hai tuần sau: thêm các bộ đề ngắn theo chủ đề, sổ câu sai có ghi chú và bộ lọc, nghe lặp một đoạn A–B, và làm riêng một phần thi có tính giờ. Bản Android đang được viết bằng Jetpack Compose.',
         ],
-        facts: [['Vai trò', 'Một mình — iOS, Android, backend, pipeline nội dung'], ['Nền tảng', 'iOS 17+ · Android đang phát triển'], ['Công nghệ', 'SwiftUI, GRDB, FSRS, StoreKit 2, Go, Jetpack Compose'], ['Phiên bản', '1.0.2 · phát hành tháng 10/2026']],
+        facts: [['Vai trò', 'Một mình — iOS, Android, backend, pipeline nội dung'], ['Nền tảng', 'iOS 17+ · Android đang phát triển'], ['Công nghệ', 'SwiftUI, GRDB, FSRS, StoreKit 2, Go, Jetpack Compose'], ['Phiên bản', '1.1.0 · 5,0 sao trên App Store']],
+        features: [
+          { title: 'Biết hôm nay cần làm gì', text: 'Màn Hôm nay đếm ngược tới ngày thi, cho biết điểm ước tính và còn thiếu bao nhiêu điểm để đậu, kèm một nhiệm vụ 5, 10 hoặc 20 phút.' },
+          { title: 'Đề thi thử đúng định dạng', text: 'Hàng trăm đề từ N5 tới N1, tính giờ từng phần như thi thật. Thoát giữa chừng vẫn giữ nguyên bài làm.' },
+          { title: 'Điểm theo từng phần', text: 'Nộp bài là có điểm ước tính kèm khoảng dao động, cảnh báo phần sắp chạm điểm liệt và việc nên làm tiếp theo.' },
+          { title: 'Luyện đúng chỗ yếu', text: 'Luyện theo dạng câu hỏi, sổ câu sai, thẻ ôn tập và nghe chép chính tả — mỗi buổi 5, 10 hoặc 20 phút.' },
+        ],
       },
       tieu: {
         name: 'Học Tiếng Tiều', kind: 'App Store', linkLabel: 'Xem trên App Store',
@@ -134,7 +172,7 @@ export const content: Record<Lang, Content> = {
           'Đánh dấu "đã xong" thì dễ tự dối mình, còn gửi ảnh cho một người bạn thì không. Ảnh chỉ chia sẻ riêng tư trong nhóm nhỏ, không có bảng tin công khai.',
           'App viết một lần cho cả Android, iOS và macOS, có widget ngoài màn hình chính và phần xử lý ảnh chạy trên một backend Python riêng. Bản Android đã có trên Google Play, bản iOS đang chuẩn bị.',
         ],
-        facts: [['Vai trò', 'Một mình — sản phẩm, app, media backend'], ['Nền tảng', 'Android · iOS đang chuẩn bị'], ['Công nghệ', 'Flutter, Firebase, Fastlane, Python'], ['Trạng thái', 'Đã phát hành trên Google Play']],
+        facts: [['Vai trò', 'Một mình — sản phẩm, app, media backend'], ['Nền tảng', 'Android · iOS đang chuẩn bị'], ['Công nghệ', 'Flutter, Firebase, Fastlane, Python'], ['Phiên bản', '1.1.1 trên Google Play']],
       },
       pea: {
         name: 'Peapod', kind: 'App Store', linkLabel: 'Xem trên App Store',
@@ -178,7 +216,7 @@ export const content: Record<Lang, Content> = {
     nav: { work: 'Work', about: 'About', contact: 'Contact', menu: 'Menu' },
     hero: {
       lines: ['I build apps,', 'from a rough *idea*', 'to the store shelf.'],
-      sub: 'Flutter and iOS developer. Four apps on the App Store, one on Google Play, and a few more on the way.',
+      sub: 'Flutter and iOS developer. Five apps on the App Store, one on Google Play, and a few more on the way.',
       place: 'Currently working in Da Nang',
       sr: 'Vuong Hy Khang — independent app developer',
     },
@@ -207,12 +245,29 @@ export const content: Record<Lang, Content> = {
         ['2023', 'Found Flutter and stayed. Built small apps non-stop to learn — most are still on GitHub.'],
         ['2024', 'The crab ledger went into daily use. My first software with people relying on it.'],
         ['2025', 'SmartMeal AI approved by Apple. My first app on the App Store under my own name.'],
-        ['2026', 'Shipped Learn Teochew, DoneDrop, Peapod and Ganba. The last two are written entirely in Swift.'],
+        ['2026', 'Shipped Learn Teochew, DoneDrop, Peapod, Ganba and Hiyoko. The last three are written entirely in Swift.'],
         ['2028', 'The plan: a small app and game studio in Ho Chi Minh City.'],
       ],
     },
+    ledger: { label: 'Shipped', title: 'Every release is *a stamp*.', note: 'First store release and current version. Google Play does not publish the first release date, so DoneDrop shows the year only.', first: 'First release', current: 'Current', next: 'On the way', nextItems: ['Peapod 1.1 — app blocking with Screen Time', 'Ganba for Android', 'Nuni HSK'] },
     footer: { lines: ["Let's make", '*something* together'], write: 'Write to me', copied: 'Email address copied', version: 'Version', time: 'Local time', storeName: 'App Store name' },
     projects: {
+      hiyoko: {
+        name: 'Hiyoko', kind: 'App Store', linkLabel: 'View on the App Store',
+        lead: 'Japanese for people starting from zero: from Hiragana and Katakana to the N5–N1 path, with a chick named Hiyo beside you.',
+        body: [
+          'Hiyoko teaches before it tests: every character you have not learned comes with romaji beside it, kana unlock lesson by lesson, and you are never asked about something you have not met. Each round takes 3–4 minutes.',
+          'Learned cards go into an FSRS review schedule with named memory stages; after a break, the app brings back just a few cards before you continue. There is a weekly league and two streak shields.',
+          'Hiyoko and Ganba share a repository and a Swift package for content, sync and reviews. In 2.0 I removed RevenueCat so purchases go through Apple\'s StoreKit alone, with a test that asserts the SDK is gone.',
+        ],
+        facts: [['Role', 'Solo — app, content, backend, release'], ['Platform', 'iOS 17+'], ['Stack', 'SwiftUI, FSRS, StoreKit 2, Go'], ['Version', '2.0.3 · released 17 October 2026']],
+        features: [
+          { title: 'Rounds of 3–4 minutes', text: 'A lesson map runs from kana to N5–N1. Continue combines due reviews, a new round and an optional extra, so the next step is always clear.' },
+          { title: 'Flip a card, stamp a hanko', text: 'Tap to flip a 3D card, swipe right to stamp it when you remember. A fog hides the reading; wipe it away to peek and it counts as not fully remembered.' },
+          { title: 'Write every stroke, get a score', text: 'Hiragana, Katakana and kanji: write each stroke and see which ones are right, close, or need another look.' },
+          { title: 'See the pitch', text: 'Words with pitch data show the high-low line right on the card, with native-speaker audio.' },
+        ],
+      },
       ganba: {
         name: 'Ganba', kind: 'App Store', linkLabel: 'View on the App Store',
         lead: 'JLPT prep from N5 to N1: take a mock test, see how many points you still need to pass, then practise the parts pulling your score down.',
@@ -220,9 +275,15 @@ export const content: Record<Lang, Content> = {
           'Ganba opens with an eight-question check that takes about three minutes, estimates your score and plans your study up to exam day. Over 200 practice tests follow the JLPT format, timed section by section like the real exam, with audio for listening, and you can leave mid-test without losing answers.',
           'All progress lives in SQLite on the device, with no account; Sign in with Apple is only there if you want sync. The server is never on the learning path: offline you can still take tests, buy Pro and unlock content.',
           'The hard part is the content. AI-drafted questions must pass a cross-check by two different models before they are published, AI-written explanations are labelled in the app, and the pipeline blocks any asset whose usage rights are unclear.',
-          'Ganba shares a repository and a Swift package with Hiyoko, an app for complete beginners. An Android version of Ganba is being written in Jetpack Compose.',
+          'Version 1.1 followed two weeks later: short sets by topic, a mistake log with notes and filters, A–B looping of listening clips, and single timed sections. An Android version is being written in Jetpack Compose.',
         ],
-        facts: [['Role', 'Solo — iOS, Android, backend, content pipeline'], ['Platform', 'iOS 17+ · Android in development'], ['Stack', 'SwiftUI, GRDB, FSRS, StoreKit 2, Go, Jetpack Compose'], ['Version', '1.0.2 · released October 2026']],
+        facts: [['Role', 'Solo — iOS, Android, backend, content pipeline'], ['Platform', 'iOS 17+ · Android in development'], ['Stack', 'SwiftUI, GRDB, FSRS, StoreKit 2, Go, Jetpack Compose'], ['Version', '1.1.0 · 5.0 stars on the App Store']],
+        features: [
+          { title: 'Know what to do today', text: 'The Today screen counts down to exam day, shows your estimated score and how many points you still need, with a 5, 10 or 20 minute mission.' },
+          { title: 'Mock tests in the real format', text: 'Hundreds of tests from N5 to N1, timed section by section like the real exam. Leave halfway and your answers are kept.' },
+          { title: 'Scores by section', text: 'Submit and get an estimated score with a range, a warning when a section is near its minimum, and what to do next.' },
+          { title: 'Practise where you are weak', text: 'Practice by question type, a mistake log, review cards and dictation — in 5, 10 or 20 minute sessions.' },
+        ],
       },
       tieu: {
         name: 'Learn Teochew', kind: 'App Store', linkLabel: 'View on the App Store',
@@ -262,7 +323,7 @@ export const content: Record<Lang, Content> = {
           'Ticking a box makes it easy to lie to yourself. Sending a photo to a friend does not. Photos are shared privately within a small circle; there is no public feed.',
           'One codebase covers Android, iOS and macOS, with a home-screen widget and image processing on a separate Python backend. The Android version is live on Google Play; iOS is being prepared.',
         ],
-        facts: [['Role', 'Solo — product, app, media backend'], ['Platform', 'Android · iOS in preparation'], ['Stack', 'Flutter, Firebase, Fastlane, Python'], ['Status', 'Live on Google Play']],
+        facts: [['Role', 'Solo — product, app, media backend'], ['Platform', 'Android · iOS in preparation'], ['Stack', 'Flutter, Firebase, Fastlane, Python'], ['Version', '1.1.1 on Google Play']],
       },
       pea: {
         name: 'Peapod', kind: 'App Store', linkLabel: 'View on the App Store',
@@ -306,7 +367,7 @@ export const content: Record<Lang, Content> = {
     nav: { work: '作品', about: '关于', contact: '联系', menu: '菜单' },
     hero: {
       lines: ['我做应用，', '从一个*想法*开始，', '一直做到上架。'],
-      sub: 'Flutter 与 iOS 开发者。四款应用已上架 App Store，一款上架 Google Play，还有几款正在路上。',
+      sub: 'Flutter 与 iOS 开发者。五款应用已上架 App Store，一款上架 Google Play，还有几款正在路上。',
       place: '目前在岘港工作',
       sr: 'Vương Hỷ Khang — 独立应用开发者',
     },
@@ -335,12 +396,29 @@ export const content: Record<Lang, Content> = {
         ['2023', '遇到 Flutter，就留了下来。为了学习不停地做小应用，大部分还放在 GitHub 上。'],
         ['2024', '螃蟹收购账本投入使用。第一次有人每天依赖我写的软件。'],
         ['2025', 'SmartMeal AI 通过 Apple 审核。第一款署我名字的 App Store 应用。'],
-        ['2026', '发布「学潮州话」、DoneDrop、Peapod 和 Ganba。后两款完全用 Swift 编写。'],
+        ['2026', '发布「学潮州话」、DoneDrop、Peapod、Ganba 和 Hiyoko。后三款完全用 Swift 编写。'],
         ['2028', '计划在胡志明市开一间小工作室，做应用和游戏。'],
       ],
     },
+    ledger: { label: '已发布', title: '每次上架，*盖一个章*。', note: '首次上架日期和当前版本。Google Play 不公开首次发布日期，所以 DoneDrop 只写年份。', first: '首次上架', current: '当前版本', next: '正在路上', nextItems: ['Peapod 1.1——用 Screen Time 屏蔽应用', 'Ganba Android 版', 'Nuni HSK'] },
     footer: { lines: ['一起做点', '*有意思*的事吧'], write: '给我写信', copied: '邮箱地址已复制', version: '版本', time: '越南时间', storeName: 'App Store 开发者名' },
     projects: {
+      hiyoko: {
+        name: 'Hiyoko', kind: 'App Store', linkLabel: '在 App Store 查看',
+        lead: '给零基础学习者的日语应用：从平假名、片假名一路走到 N5–N1，身边有一只叫 Hiyo 的小鸡陪着。',
+        body: [
+          'Hiyoko 先教后考：没学过的字旁边总有罗马音，假名随课程逐步解锁，绝不会考你没见过的东西。每一轮只要 3–4 分钟。',
+          '学过的卡片进入 FSRS 复习计划，记忆阶段都有明确名称；隔了很久再回来，应用只先拿几张卡热身再继续。另有每周联赛和两个连续天数护盾。',
+          'Hiyoko 和 Ganba 共用一个仓库和一个负责内容、同步与复习的 Swift package。2.0 版我去掉了 RevenueCat，购买只走 Apple 的 StoreKit，并有测试确认应用里已不再带这个 SDK。',
+        ],
+        facts: [['角色', '独立完成——应用、内容、后端、发布'], ['平台', 'iOS 17+'], ['技术', 'SwiftUI, FSRS, StoreKit 2, Go'], ['版本', '2.0.3 · 2026 年 10 月 17 日发布']],
+        features: [
+          { title: '每轮 3–4 分钟', text: '课程地图从假名一直到 N5–N1。「继续」把到期复习、新一轮和可选加练合在一起，下一步永远清楚。' },
+          { title: '翻卡片，盖印章', text: '点一下翻转 3D 卡片，记住了就右滑盖章。读音被一层雾挡住，擦开偷看就算没完全记住。' },
+          { title: '一笔一画，都有评分', text: '平假名、片假名和汉字：每一笔写下去，应用会告诉你哪笔对了、差一点、还是需要再看看。' },
+          { title: '看得见的音调', text: '有音高数据的单词，高低线直接画在卡片上，并配有母语者发音。' },
+        ],
+      },
       ganba: {
         name: 'Ganba', kind: 'App Store', linkLabel: '在 App Store 查看',
         lead: '从 N5 到 N1 的 JLPT 备考应用：做一套模拟题，看清离及格还差多少分，再专门练拉低分数的部分。',
@@ -348,9 +426,15 @@ export const content: Record<Lang, Content> = {
           'Ganba 先用大约三分钟、八道题做一次测评，估算分数，再把学习计划排到考试当天。200 多套练习题完全按 JLPT 格式，像真实考试一样分部分计时，听力配有音频，中途退出也不会丢失作答。',
           '所有进度都存在设备上的 SQLite 里，不需要账号；用 Apple 登录只是为了可选的同步。服务器从不挡在学习路径上：断网时照样能做题、买 Pro、解锁内容。',
           '最难的是内容。AI 起草的题目必须经过两个不同模型的交叉检查才能发布，AI 写的解析在应用里会明确标注，流水线还会自动拦下任何使用权不明的素材。',
-          'Ganba 与面向零基础学习者的 Hiyoko 放在同一个仓库，两款应用共用一个 Swift package。Ganba 的 Android 版正在用 Jetpack Compose 编写。',
+          '两周后发布了 1.1 版：按主题划分的短套题、可加笔记和筛选的错题本、听力 A–B 段循环，以及单独计时的某一部分考试。Android 版正在用 Jetpack Compose 编写。',
         ],
-        facts: [['角色', '独立完成——iOS、Android、后端、内容流水线'], ['平台', 'iOS 17+ · Android 开发中'], ['技术', 'SwiftUI, GRDB, FSRS, StoreKit 2, Go, Jetpack Compose'], ['版本', '1.0.2 · 2026 年 10 月发布']],
+        facts: [['角色', '独立完成——iOS、Android、后端、内容流水线'], ['平台', 'iOS 17+ · Android 开发中'], ['技术', 'SwiftUI, GRDB, FSRS, StoreKit 2, Go, Jetpack Compose'], ['版本', '1.1.0 · App Store 5.0 星']],
+        features: [
+          { title: '知道今天该做什么', text: '「今天」页面倒数到考试日，显示估算分数和离及格还差几分，并给出 5、10 或 20 分钟的任务。' },
+          { title: '真实格式的模拟考', text: 'N5 到 N1 共数百套题，像真实考试一样分部分计时。中途退出也会保留作答。' },
+          { title: '按部分给分', text: '交卷后给出带区间的估算分数，提醒哪个部分接近及格线，并告诉你下一步做什么。' },
+          { title: '专攻薄弱点', text: '按题型练习、错题本、复习卡片和听写——每次 5、10 或 20 分钟。' },
+        ],
       },
       tieu: {
         name: '学潮州话', kind: 'App Store', linkLabel: '在 App Store 查看',
@@ -390,7 +474,7 @@ export const content: Record<Lang, Content> = {
           '勾一下「已完成」很容易骗自己，把照片发给朋友就没那么容易了。照片只在小圈子里私下分享，没有公开的动态。',
           '一套代码同时支持 Android、iOS 和 macOS，有桌面小组件，图片处理由单独的 Python 后端负责。Android 版已上架 Google Play，iOS 版正在准备中。',
         ],
-        facts: [['角色', '独立完成——产品、应用、媒体后端'], ['平台', 'Android · iOS 准备中'], ['技术', 'Flutter, Firebase, Fastlane, Python'], ['状态', '已上架 Google Play']],
+        facts: [['角色', '独立完成——产品、应用、媒体后端'], ['平台', 'Android · iOS 准备中'], ['技术', 'Flutter, Firebase, Fastlane, Python'], ['版本', 'Google Play 1.1.1']],
       },
       pea: {
         name: 'Peapod', kind: 'App Store', linkLabel: '在 App Store 查看',
