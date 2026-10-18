@@ -52,6 +52,7 @@ export interface Content {
   about: { label: string; lines: string[]; paras: string[]; journey: [string, string][] }
   footer: { lines: string[]; write: string; copied: string; version: string; time: string; storeName: string }
   ledger: { label: string; title: string; note: string; first: string; current: string; next: string; nextItems: string[] }
+  play: { label: string; title: string; note: string }
   projects: Record<string, PText>
 }
 
@@ -98,6 +99,7 @@ export const content: Record<Lang, Content> = {
         ['2028', 'Dự định mở một studio nhỏ làm app và game ở TP.HCM.'],
       ],
     },
+    play: { label: 'Thử ngay', title: 'Đừng chỉ xem ảnh, *chạm thử*.', note: 'Ba tương tác đặc trưng của Hiyoko, Peapod và Ganba, dựng lại bằng HTML để bạn bấm thử ngay trên trang. Đây là bản demo, không phải app thật.' },
     ledger: { label: 'Đã phát hành', title: 'Mỗi lần lên store là *một con dấu*.', note: 'Ngày lên store lần đầu và phiên bản hiện tại. Google Play không công khai ngày đầu tiên nên DoneDrop chỉ ghi năm.', first: 'Lên store', current: 'Hiện tại', next: 'Đang trên đường', nextItems: ['Peapod 1.1 — chặn app bằng Screen Time', 'Ganba cho Android', 'Nuni HSK'] },
     footer: { lines: ['Mình cùng', 'làm *gì đó* nhé'], write: 'Viết cho tôi', copied: 'Đã chép địa chỉ email', version: 'Phiên bản', time: 'Giờ ở Việt Nam', storeName: 'Tên trên App Store' },
     projects: {
@@ -249,6 +251,7 @@ export const content: Record<Lang, Content> = {
         ['2028', 'The plan: a small app and game studio in Ho Chi Minh City.'],
       ],
     },
+    play: { label: 'Try it', title: 'Don\'t just look, *tap*.', note: 'The signature interactions of Hiyoko, Peapod and Ganba, rebuilt in HTML so you can try them right here. These are demos, not the real apps.' },
     ledger: { label: 'Shipped', title: 'Every release is *a stamp*.', note: 'First store release and current version. Google Play does not publish the first release date, so DoneDrop shows the year only.', first: 'First release', current: 'Current', next: 'On the way', nextItems: ['Peapod 1.1 — app blocking with Screen Time', 'Ganba for Android', 'Nuni HSK'] },
     footer: { lines: ["Let's make", '*something* together'], write: 'Write to me', copied: 'Email address copied', version: 'Version', time: 'Local time', storeName: 'App Store name' },
     projects: {
@@ -400,6 +403,7 @@ export const content: Record<Lang, Content> = {
         ['2028', '计划在胡志明市开一间小工作室，做应用和游戏。'],
       ],
     },
+    play: { label: '试一试', title: '别只看截图，*动手点点*。', note: 'Hiyoko、Peapod 和 Ganba 的招牌交互，用 HTML 重新做了一遍，可以直接在页面上试。这些是演示，不是真正的应用。' },
     ledger: { label: '已发布', title: '每次上架，*盖一个章*。', note: '首次上架日期和当前版本。Google Play 不公开首次发布日期，所以 DoneDrop 只写年份。', first: '首次上架', current: '当前版本', next: '正在路上', nextItems: ['Peapod 1.1——用 Screen Time 屏蔽应用', 'Ganba Android 版', 'Nuni HSK'] },
     footer: { lines: ['一起做点', '*有意思*的事吧'], write: '给我写信', copied: '邮箱地址已复制', version: '版本', time: '越南时间', storeName: 'App Store 开发者名' },
     projects: {

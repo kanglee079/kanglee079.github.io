@@ -8,6 +8,10 @@ import { flushSync } from 'react-dom'
 import { createCursorPreviewGL, type CursorPreviewGL } from './cursor-preview-gl'
 import { APPSTORE, EMAIL, GITHUB, LANGS, PLAYSTORE, content, meta, type Content, type Lang, type Meta, type PText } from './data'
 import { extra, how, tech } from './tech'
+import HiyokoDemo from './demos/hiyoko-demo'
+import PeapodDemo from './demos/peapod-demo'
+import GanbaDemo from './demos/ganba-demo'
+import Phone3D from './phone-3d'
 
 const EXPO = [0.16, 1, 0.3, 1] as const
 const SWIFT = [0.7, 0, 0.2, 1] as const
@@ -494,6 +498,7 @@ function FeatureBlock({ i, title, text, onActive, compact }: { i: number; title:
 
 function Spotlight({ p, onOpen }: { p: Proj; onOpen: (id: string) => void }) {
   const { t, touch } = useT()
+  const reduce = !!useReducedMotion()
   const [a, setA] = useState(0)
   const feats = p.features!, shots = p.shots!
   const phone = (h: string) => (
@@ -516,6 +521,8 @@ function Spotlight({ p, onOpen }: { p: Proj; onOpen: (id: string) => void }) {
           <Fade className="max-w-[44ch] text-[18px] leading-[1.5]">{p.lead}</Fade>
         </div>
 
+        {p.id === 'hiyoko' && shots[1] && <Phone3D src={shots[1]} reduce={reduce} className="mt-6" />}
+
         {touch ? (
           <div>
             <div className="sticky top-0 z-10 flex h-[48svh] items-end justify-center pb-3 pt-4" style={{ background: p.panel }}>{phone('h-[calc(48svh-36px)]')}</div>
@@ -531,6 +538,31 @@ function Spotlight({ p, onOpen }: { p: Proj; onOpen: (id: string) => void }) {
           <button onClick={() => onOpen(p.id)} className="link-on">{t.work.more}</button>
           {p.href && <a href={p.href} target="_blank" rel="noopener" className="link-on">{p.linkLabel} ↗</a>}
         </div>
+      </div>
+    </section>
+  )
+}
+
+/* ---------------------------------------------------------------- */
+/* thử ngay — mini-demo tương tác của từng app                         */
+/* ---------------------------------------------------------------- */
+
+function Play() {
+  const { t, lang, touch } = useT()
+  const reduce = !!useReducedMotion()
+  const props = { lang, touch, reduce }
+  const slots = [<HiyokoDemo key="h" {...props} />, <PeapodDemo key="p" {...props} />, <GanbaDemo key="g" {...props} />]
+  return (
+    <section className="border-t border-[var(--hair)] py-[clamp(80px,12vw,160px)]">
+      <div className="wrap grid gap-x-10 gap-y-5 md:grid-cols-12">
+        <p className="mono text-[var(--grey)] md:col-span-3">{t.play.label}</p>
+        <div className="md:col-span-9">
+          <h2 className="display max-w-[18ch] text-[clamp(32px,4.4vw,64px)]"><Lines lines={[<Rich key="t" s={t.play.title} />]} /></h2>
+          <Fade className="mt-4 max-w-[54ch] text-[var(--grey)]">{t.play.note}</Fade>
+        </div>
+      </div>
+      <div className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[clamp(20px,4.5vw,64px)] pb-4 [scroll-padding-inline:clamp(20px,4.5vw,64px)] lg:mx-auto lg:grid lg:max-w-[1360px] lg:grid-cols-3 lg:gap-6 lg:overflow-visible" data-lenis-prevent={touch || undefined}>
+        {slots.map((s, i) => <div key={i} className="w-[min(86vw,380px)] shrink-0 snap-center lg:w-auto">{s}</div>)}
       </div>
     </section>
   )
@@ -900,6 +932,7 @@ export default function App() {
         <WorkIndex onOpen={openProject} />
         {narrow ? <StackCards onOpen={openProject} /> : <Reel />}
         {ctx.projects.filter((p) => p.spot && p.features).map((p) => <Spotlight key={p.id} p={p} onOpen={openProject} />)}
+        <Play />
         <Ledger />
         <HowIBuild />
         <Archive />
