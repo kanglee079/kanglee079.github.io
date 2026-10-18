@@ -499,6 +499,7 @@ function FeatureBlock({ i, title, text, onActive, compact }: { i: number; title:
 function Spotlight({ p, onOpen }: { p: Proj; onOpen: (id: string) => void }) {
   const { t, touch } = useT()
   const reduce = !!useReducedMotion()
+  const narrow = useMedia('(max-width: 767px)')
   const [a, setA] = useState(0)
   const feats = p.features!, shots = p.shots!
   const phone = (h: string) => (
@@ -521,7 +522,7 @@ function Spotlight({ p, onOpen }: { p: Proj; onOpen: (id: string) => void }) {
           <Fade className="max-w-[44ch] text-[18px] leading-[1.5]">{p.lead}</Fade>
         </div>
 
-        {p.id === 'hiyoko' && shots[1] && <Phone3D src={shots[1]} reduce={reduce} className="mt-6" />}
+        {p.id === 'hiyoko' && shots[1] && !narrow && <Phone3D src={shots[1]} reduce={reduce} className="mt-6" />}
 
         {touch ? (
           <div>
@@ -562,7 +563,7 @@ function Play() {
         </div>
       </div>
       <div className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[clamp(20px,4.5vw,64px)] pb-4 [scroll-padding-inline:clamp(20px,4.5vw,64px)] lg:mx-auto lg:grid lg:max-w-[1360px] lg:grid-cols-3 lg:gap-6 lg:overflow-visible" data-lenis-prevent={touch || undefined}>
-        {slots.map((s, i) => <div key={i} className="w-[min(86vw,380px)] shrink-0 snap-center lg:w-auto">{s}</div>)}
+        {slots.map((s, i) => <div key={i} className="w-[min(86vw,380px)] shrink-0 snap-center lg:w-auto [&_button]:text-center">{s}</div>)}
       </div>
     </section>
   )
